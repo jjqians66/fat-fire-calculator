@@ -45,7 +45,7 @@ npm run test:e2e
 ## Data Notes
 
 - City and tax data are committed as JSON for auditability.
-- The current 2026 tax and city values are plan-derived implementation data and should be verified against primary sources before a public launch.
+- 2026 federal tax values were updated to the current IRS release; state and city values still need a primary-source audit before a public launch.
 - FX uses a live USD base feed with per-city fallback rates.
 
 ## Learn More

@@ -17,6 +17,7 @@ export function CompareClient({
   const rows = cities.map((city) => ({
     city,
     result: computeFireNumber(city, DEFAULT_INPUTS, city.fx.referenceRateUsdPerLocal),
+    sourceTitle: city.sources.join(" · "),
   }));
 
   function toggleCity(slug: string) {
@@ -86,32 +87,32 @@ export function CompareClient({
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ city, result }) => (
+            {rows.map(({ city, result, sourceTitle }) => (
               <tr key={city.slug} className="border-b border-black/5 text-sm text-neutral-800">
                 <td className="py-4 pr-4">
                   <Link href={`/city/${city.slug}`} className="font-semibold hover:text-[var(--accent)]">
                     {city.name}
                   </Link>
                 </td>
-                <td className="py-4 pr-4">
+                <td className="py-4 pr-4" title={sourceTitle}>
                   $
                   {result.annualSpendUsd.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
                   })}
                 </td>
-                <td className="py-4 pr-4">
+                <td className="py-4 pr-4" title={sourceTitle}>
                   $
                   {result.grossWithdrawalUsd.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
                   })}
                 </td>
-                <td className="py-4 pr-4">
+                <td className="py-4 pr-4" title={sourceTitle}>
                   $
                   {result.taxBreakdown.totalTax.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
                   })}
                 </td>
-                <td className="py-4 pr-4 font-semibold">
+                <td className="py-4 pr-4 font-semibold" title={sourceTitle}>
                   $
                   {result.fireNumberUsd.toLocaleString("en-US", {
                     maximumFractionDigits: 0,

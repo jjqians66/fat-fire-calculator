@@ -17,8 +17,11 @@ function computeYearsToFire(
   annualSavingsUsd: number,
   realReturn: number
 ): number | null {
-  if (currentPortfolioUsd <= 0 || annualSavingsUsd <= 0) {
+  if (currentPortfolioUsd <= 0 && annualSavingsUsd <= 0) {
     return null;
+  }
+  if (currentPortfolioUsd >= targetCapital) {
+    return 0;
   }
 
   let portfolio = currentPortfolioUsd;

@@ -1,10 +1,10 @@
 "use client";
 
+import { useMeasuredDimensions } from "@/components/results/useMeasuredDimensions";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -16,6 +16,7 @@ interface TaxBreakdownChartProps {
   federalOrdinary: number;
   niit: number;
   stateTax: number;
+  sourceTitle?: string;
 }
 
 export function TaxBreakdownChart({
@@ -24,7 +25,9 @@ export function TaxBreakdownChart({
   federalOrdinary,
   niit,
   stateTax,
+  sourceTitle,
 }: TaxBreakdownChartProps) {
+  const { ref, width, height } = useMeasuredDimensions();
   const totalTax = federalLtcg + federalOrdinary + niit + stateTax;
   const data = [
     {
@@ -45,18 +48,24 @@ export function TaxBreakdownChart({
       <p className="mt-1 text-xs text-neutral-500">
         See how much of the gross annual draw becomes spendable net cash.
       </p>
-      <div className="mt-4 h-[220px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ left: 16, right: 16 }}>
+      <div ref={ref} className="mt-4 h-[220px] min-w-0" title={sourceTitle}>
+        {width > 16 && height > 16 ? (
+          <BarChart
+            width={Math.max(width, 320)}
+            height={Math.max(height, 220)}
+            data={data}
+            margin={{ left: 16, right: 16 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(17,24,39,0.08)" />
             <XAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
             <YAxis hide />
             <Tooltip
-              formatter={(value) =>
+              formatter={(value, name) => [
                 `$${Number(value ?? 0).toLocaleString("en-US", {
                   maximumFractionDigits: 0,
-                })}`
-              }
+                })}`,
+                name,
+              ]}
             />
             <Bar dataKey="federalLtcg" stackId="a" fill="#7c3aed" radius={[0, 0, 0, 0]} />
             <Bar dataKey="federalOrdinary" stackId="a" fill="#ea580c" radius={[0, 0, 0, 0]} />
@@ -64,7 +73,9 @@ export function TaxBreakdownChart({
             <Bar dataKey="stateTax" stackId="a" fill="#2563eb" radius={[0, 0, 0, 0]} />
             <Bar dataKey="netSpend" stackId="a" fill="#0f766e" radius={[10, 10, 10, 10]} />
           </BarChart>
-        </ResponsiveContainer>
+        ) : (
+          <div className="h-full rounded-2xl bg-neutral-100" />
+        )}
       </div>
     </div>
   );

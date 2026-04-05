@@ -42,20 +42,32 @@ export function applyBrackets(amount: number, brackets: TaxBracket[]): number {
 
 export function computeLtcgTax(
   grossWithdrawal: number,
-  costBasisPct: number
+  costBasisPct: number,
+  ordinaryTaxableIncome = 0
 ): number {
   const gain = Math.max(0, grossWithdrawal * (1 - costBasisPct));
-  return applyBrackets(gain, federalTax.longTermCapitalGains.brackets);
+  if (gain <= 0) return 0;
+  // LTCG stacks on top of ordinary taxable income: tax on the slice from
+  // [ordinary, ordinary + gain] using LTCG brackets.
+  const base = Math.max(0, ordinaryTaxableIncome);
+  const brackets = federalTax.longTermCapitalGains.brackets;
+  return applyBrackets(base + gain, brackets) - applyBrackets(base, brackets);
 }
 
-export function computeNiit(investmentIncome: number): number {
+export function computeNiit(gain: number, magi: number): number {
   const { threshold, rate } = federalTax.niit;
-  return Math.max(0, investmentIncome - threshold) * rate;
+  const overThreshold = Math.max(0, magi - threshold);
+  const base = Math.min(Math.max(0, gain), overThreshold);
+  return base * rate;
 }
 
 export function computeOrdinaryTax(grossIncome: number): number {
-  const taxableIncome = Math.max(0, grossIncome - federalTax.standardDeduction);
+  const taxableIncome = ordinaryTaxableIncome(grossIncome);
   return applyBrackets(taxableIncome, federalTax.ordinaryIncome.brackets);
+}
+
+export function ordinaryTaxableIncome(grossIncome: number): number {
+  return Math.max(0, grossIncome - federalTax.standardDeduction);
 }
 
 export function computeStateTax(
@@ -74,10 +86,17 @@ export function computeStateTax(
 
 export function computeTotalTax(input: TaxInput): TaxBreakdown {
   void input.rothGross;
-  const gain = input.taxableGross * (1 - input.costBasisPct);
-  const federalLtcg = computeLtcgTax(input.taxableGross, input.costBasisPct);
+  const gain = Math.max(0, input.taxableGross * (1 - input.costBasisPct));
+  const ordinaryTaxable = ordinaryTaxableIncome(input.traditionalGross);
+  const federalLtcg = computeLtcgTax(
+    input.taxableGross,
+    input.costBasisPct,
+    ordinaryTaxable
+  );
   const federalOrdinary = computeOrdinaryTax(input.traditionalGross);
-  const niit = computeNiit(gain);
+  // MAGI ≈ ordinary taxable income + investment gain for a portfolio-only retiree.
+  const magi = ordinaryTaxable + gain;
+  const niit = computeNiit(gain, magi);
   const stateTax = computeStateTax(gain, input.traditionalGross, input.stateCode);
   const totalTax = federalLtcg + federalOrdinary + niit + stateTax;
 

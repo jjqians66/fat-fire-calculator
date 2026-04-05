@@ -46,7 +46,9 @@ export const CityDataSchema = z.object({
   currency: z.string().regex(/^[A-Z]{3}$/),
   locale: z.string().min(2),
   lastUpdated: z.string().regex(/^\d{4}-Q[1-4]$/),
-  sources: z.array(z.string().min(1)).min(2),
+  sources: z
+    .array(z.string().regex(/\b20\d{2}\b/, "Source must include a year"))
+    .min(2),
   fx: FxSnapshotSchema,
   housing: HousingDataSchema,
   tiers: z.object({

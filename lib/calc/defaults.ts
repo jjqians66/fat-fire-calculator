@@ -1,3 +1,4 @@
+import assumptions from "@/data/assumptions.json";
 import type { CalcInputs } from "./types";
 
 export const DEFAULT_INPUTS: CalcInputs = {
@@ -9,19 +10,14 @@ export const DEFAULT_INPUTS: CalcInputs = {
   housingSize: "1br",
   homeSqm: 80,
   categoryOverrides: {},
-  portfolio: {
-    taxablePct: 0.7,
-    traditionalPct: 0.2,
-    rothPct: 0.1,
-    costBasisPct: 0.65,
-  },
+  portfolio: assumptions.defaultPortfolio,
   usStateCode: "NONE",
-  swr: 0.0325,
+  swr: assumptions.defaultSwr,
   withdrawalStrategy: "proportional",
-  retirementAge: 45,
-  lifeExpectancy: 95,
-  realReturn: 0.05,
-  inflation: 0.025,
+  retirementAge: assumptions.defaultRetirementAge,
+  lifeExpectancy: assumptions.defaultLifeExpectancy,
+  realReturn: assumptions.defaultRealReturn,
+  inflation: assumptions.defaultInflation,
   currentPortfolioUsd: 0,
   annualSavingsUsd: 0,
 };

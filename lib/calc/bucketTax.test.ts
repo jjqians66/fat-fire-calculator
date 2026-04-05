@@ -11,7 +11,7 @@ describe("computeTotalTax", () => {
       stateCode: "NONE",
     });
 
-    expect(result.federalLtcg).toBeCloseTo((105000 - 48350) * 0.15, 2);
+    expect(result.federalLtcg).toBeCloseTo((105000 - 49450) * 0.15, 2);
     expect(result.federalOrdinary).toBe(0);
     expect(result.niit).toBe(0);
     expect(result.stateTax).toBe(0);
@@ -27,7 +27,9 @@ describe("computeTotalTax", () => {
       stateCode: "NONE",
     });
 
-    expect(result.federalOrdinary).toBeCloseTo(1192.5 + 4386 + 8035.5, 2);
+    // 2026 brackets, $100k gross − $16.1k std deduction = $83.9k taxable:
+    // 12,400 @ 10% + 38,000 @ 12% + 33,500 @ 22% = 13,170
+    expect(result.federalOrdinary).toBeCloseTo(1240 + 4560 + 7370, 2);
   });
 
   it("treats Roth withdrawals as tax free", () => {

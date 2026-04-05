@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { InputSection } from "@/components/inputs/InputSection";
 import { Select } from "@/components/inputs/Select";
-import { TaxBreakdownChart } from "@/components/results/TaxBreakdownChart";
 import { computeHousing } from "@/lib/calc/housing";
 import { applyHouseholdProfile } from "@/lib/calc/household";
 import { computeFireNumber } from "@/lib/calc/fireNumber";
@@ -25,9 +24,30 @@ const SpendChart = dynamic(
           Annual spend by category
         </h3>
         <p className="mt-1 text-xs text-neutral-500">
-          City preset plus your current overrides, converted to USD.
+          Baseline preset vs your current overrides, converted to USD.
         </p>
         <div className="mt-4 h-[360px] animate-pulse rounded-[20px] bg-neutral-100" />
+      </div>
+    ),
+  }
+);
+
+const TaxBreakdownChart = dynamic(
+  () =>
+    import("@/components/results/TaxBreakdownChart").then(
+      (module) => module.TaxBreakdownChart
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
+        <h3 className="text-sm font-semibold text-neutral-950">
+          Gross withdrawal composition
+        </h3>
+        <p className="mt-1 text-xs text-neutral-500">
+          See how much of the gross annual draw becomes spendable net cash.
+        </p>
+        <div className="mt-4 h-[220px] animate-pulse rounded-[20px] bg-neutral-100" />
       </div>
     ),
   }
@@ -58,6 +78,11 @@ const housingAreaOptions = [
 const housingSizeOptions = [
   { value: "1br", label: "1 BR" },
   { value: "3br", label: "3 BR" },
+] as const;
+
+const withdrawalStrategyOptions = [
+  { value: "proportional", label: "Proportional" },
+  { value: "tax_optimal", label: "Tax-optimal" },
 ] as const;
 
 type EditableCategoryKey = Exclude<keyof TierCosts, "description">;
@@ -285,7 +310,7 @@ export function CalculatorClient({
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)_minmax(19rem,23rem)]">
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <InputSection
             title="Household"
             description="Retirement horizon and family profile change spending pressure and warning thresholds."
@@ -435,9 +460,10 @@ export function CalculatorClient({
                       onChange={(event) =>
                         updateCategoryOverride(field.key, Number(event.target.value))
                       }
+                      title={sourceTitle}
                       className="w-full rounded-2xl border border-black/10 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none transition focus:border-[var(--accent)]"
                     />
-                    <p className="text-xs text-neutral-500">
+                    <p className="text-xs text-neutral-500" title={sourceTitle}>
                       Baseline:{" "}
                       {isPercent
                         ? `${(Number(baseTier[field.key]) * 100).toFixed(0)}%`
@@ -455,6 +481,14 @@ export function CalculatorClient({
           </InputSection>
 
           <InputSection title="Portfolio composition">
+            <Select
+              label="Withdrawal sequencing"
+              value={inputs.withdrawalStrategy}
+              options={withdrawalStrategyOptions}
+              onChange={(value) =>
+                updateInputs({ ...inputs, withdrawalStrategy: value })
+              }
+            />
             <label className="block space-y-1.5">
               <span className="text-sm font-medium text-neutral-700">
                 Taxable: {(inputs.portfolio.taxablePct * 100).toFixed(0)}%
@@ -658,9 +692,12 @@ export function CalculatorClient({
 
         <div className="space-y-4">
           <SpendChart
-            tier={displayedTier}
+            baselineTier={baseTier}
+            adjustedTier={displayedTier}
             fxUsdPerLocal={fx}
-            annualHousingLocal={housing.annualHousingLocal}
+            baselineHousingLocal={housing.annualHousingLocal}
+            adjustedHousingLocal={housing.annualHousingLocal}
+            sourceTitle={sourceTitle}
           />
           <TaxBreakdownChart
             grossWithdrawalUsd={result.grossWithdrawalUsd}
@@ -668,6 +705,7 @@ export function CalculatorClient({
             federalOrdinary={result.taxBreakdown.federalOrdinary}
             niit={result.taxBreakdown.niit}
             stateTax={result.taxBreakdown.stateTax}
+            sourceTitle={sourceTitle}
           />
           <details className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
             <summary className="flex items-center justify-between text-sm font-semibold text-neutral-950">
@@ -681,7 +719,7 @@ export function CalculatorClient({
               <dl className="grid gap-2">
                 <div className="flex justify-between gap-4">
                   <dt>Annual spend (USD)</dt>
-                  <dd>
+                  <dd title={sourceTitle}>
                     $
                     {result.annualSpendUsd.toLocaleString("en-US", {
                       maximumFractionDigits: 0,
@@ -690,7 +728,7 @@ export function CalculatorClient({
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt>Gross withdrawal</dt>
-                  <dd>
+                  <dd title={sourceTitle}>
                     $
                     {result.grossWithdrawalUsd.toLocaleString("en-US", {
                       maximumFractionDigits: 0,
@@ -699,7 +737,7 @@ export function CalculatorClient({
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt>Total tax</dt>
-                  <dd>
+                  <dd title={sourceTitle}>
                     $
                     {result.taxBreakdown.totalTax.toLocaleString("en-US", {
                       maximumFractionDigits: 0,
@@ -708,11 +746,11 @@ export function CalculatorClient({
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt>SWR</dt>
-                  <dd>{(inputs.swr * 100).toFixed(2)}%</dd>
+                  <dd title={sourceTitle}>{(inputs.swr * 100).toFixed(2)}%</dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt>Required portfolio</dt>
-                  <dd>
+                  <dd title={sourceTitle}>
                     $
                     {result.fireNumberUsd.toLocaleString("en-US", {
                       maximumFractionDigits: 0,
@@ -806,7 +844,7 @@ export function CalculatorClient({
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-neutral-500">Gross withdrawal</dt>
-                <dd>
+                <dd title={sourceTitle}>
                   $
                   {result.grossWithdrawalUsd.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
@@ -815,7 +853,7 @@ export function CalculatorClient({
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-neutral-500">Total tax</dt>
-                <dd>
+                <dd title={sourceTitle}>
                   $
                   {result.taxBreakdown.totalTax.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
@@ -824,7 +862,7 @@ export function CalculatorClient({
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-neutral-500">Net spend</dt>
-                <dd>
+                <dd title={sourceTitle}>
                   $
                   {(result.grossWithdrawalUsd - result.taxBreakdown.totalTax).toLocaleString(
                     "en-US",
@@ -836,7 +874,7 @@ export function CalculatorClient({
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-neutral-500">Years to FIRE</dt>
-                <dd data-testid="years-to-fire">
+                <dd data-testid="years-to-fire" title={sourceTitle}>
                   {result.yearsToFire ? `${result.yearsToFire} years` : "Add portfolio + savings"}
                 </dd>
               </div>

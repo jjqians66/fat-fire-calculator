@@ -10,7 +10,7 @@
     "SD": { "name": "South Dakota", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
     "WY": { "name": "Wyoming", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
     "AK": { "name": "Alaska", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
-    "NH": { "name": "New Hampshire", "capGainsRate": 0.0, "ordinaryRateTop": 0.05, "treatsLTCGAsOrdinary": false },
+    "NH": { "name": "New Hampshire", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
     "CA": { "name": "California", "capGainsRate": 0.133, "ordinaryRateTop": 0.133, "treatsLTCGAsOrdinary": true },
     "NY": { "name": "New York", "capGainsRate": 0.109, "ordinaryRateTop": 0.109, "treatsLTCGAsOrdinary": true },
     "OR": { "name": "Oregon", "capGainsRate": 0.099, "ordinaryRateTop": 0.099, "treatsLTCGAsOrdinary": true },
@@ -21,5 +21,5 @@
     "CO": { "name": "Colorado", "capGainsRate": 0.044, "ordinaryRateTop": 0.044, "treatsLTCGAsOrdinary": true },
     "AZ": { "name": "Arizona", "capGainsRate": 0.025, "ordinaryRateTop": 0.025, "treatsLTCGAsOrdinary": true }
   },
-  "notes": "Top marginal rates from the implementation plan. Use verified state sources before launch."
+  "notes": "Simplified top marginal rates for modeling. New Hampshire set to zero after the accelerated repeal of the interest and dividends tax for periods beginning after December 31, 2024."
 }

@@ -1,8 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { clearCache, fetchUsdRate } from "./fetchRates";
 
+function makeStorage() {
+  const store = new Map<string, string>();
+  return {
+    getItem: (key: string) => store.get(key) ?? null,
+    setItem: (key: string, value: string) => {
+      store.set(key, value);
+    },
+    removeItem: (key: string) => {
+      store.delete(key);
+    },
+  };
+}
+
 describe("fetchUsdRate", () => {
   beforeEach(() => {
+    vi.unstubAllGlobals();
+    vi.stubGlobal("window", { localStorage: makeStorage() });
     clearCache();
     global.fetch = vi.fn(async () => ({
       ok: true,
@@ -24,5 +39,16 @@ describe("fetchUsdRate", () => {
   it("returns 1.0 for USD", async () => {
     const rate = await fetchUsdRate("USD", 1);
     expect(rate).toBe(1);
+  });
+
+  it("reuses a fresh localStorage cache before refetching", async () => {
+    const first = await fetchUsdRate("CAD", 0.72);
+    expect(first).toBeCloseTo(1 / 1.37, 5);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    clearCache();
+    const second = await fetchUsdRate("CAD", 0.72);
+    expect(second).toBeCloseTo(1 / 1.37, 5);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 });

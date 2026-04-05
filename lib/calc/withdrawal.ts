@@ -53,8 +53,8 @@ export function solveGrossWithdrawal(
     stateTax: 0,
     totalTax: 0,
   };
-  const maxIterations = 20;
-  const tolerance = 1;
+  const maxIterations = 30;
+  const tolerance = 0.01;
 
   let iteration = 0;
   for (; iteration < maxIterations; iteration += 1) {

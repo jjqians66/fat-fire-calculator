@@ -65,6 +65,14 @@ describe("CityDataSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("requires source strings to include a year", () => {
+    const result = CityDataSchema.safeParse({
+      ...validCity,
+      sources: ["Numbeo", "Mercer"],
+    });
+    expect(result.success).toBe(false);
+  });
+
   it("rejects negative costs", () => {
     const result = CityDataSchema.safeParse({
       ...validCity,
