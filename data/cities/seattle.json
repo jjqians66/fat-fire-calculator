@@ -1,0 +1,83 @@
+{
+  "slug": "seattle",
+  "name": "Seattle",
+  "country": "United States",
+  "currency": "USD",
+  "locale": "en-US",
+  "lastUpdated": "2026-Q1",
+  "sources": [
+    "Numbeo 2026-01",
+    "BLS CPI 2025",
+    "Zillow Rent Index 2025"
+  ],
+  "fx": {
+    "referenceRateUsdPerLocal": 1,
+    "asOf": "2026-01-15"
+  },
+  "housing": {
+    "rent_1br_central_monthly": 2600,
+    "rent_3br_central_monthly": 5200,
+    "rent_1br_suburb_monthly": 2000,
+    "rent_3br_suburb_monthly": 3600,
+    "buy_price_per_sqm_central": 9000,
+    "buy_price_per_sqm_suburb": 6000,
+    "property_tax_annual_pct": 0.0093,
+    "maintenance_annual_pct": 0.01
+  },
+  "tiers": {
+    "true_fat_fire": {
+      "description": "Downtown/Belltown luxury high-rise, full lifestyle",
+      "groceries_monthly": 1800,
+      "dining_out_monthly": 3500,
+      "transport_monthly": 900,
+      "healthcare_monthly": 1800,
+      "utilities_monthly": 300,
+      "internet_mobile_monthly": 200,
+      "entertainment_monthly": 1800,
+      "personal_services_monthly": 1200,
+      "domestic_help_monthly": 1500,
+      "luxury_misc_monthly": 1800,
+      "education_annual": 45000,
+      "travel_annual": 35000,
+      "legal_tax_compliance_annual": 6000,
+      "visa_residency_annual": 0,
+      "contingency_pct": 0.1
+    },
+    "comfortable_expat": {
+      "description": "Capitol Hill/Fremont mid-tier apartment, regular dining",
+      "groceries_monthly": 1000,
+      "dining_out_monthly": 1200,
+      "transport_monthly": 400,
+      "healthcare_monthly": 800,
+      "utilities_monthly": 220,
+      "internet_mobile_monthly": 150,
+      "entertainment_monthly": 700,
+      "personal_services_monthly": 400,
+      "domestic_help_monthly": 300,
+      "luxury_misc_monthly": 500,
+      "education_annual": 25000,
+      "travel_annual": 15000,
+      "legal_tax_compliance_annual": 3000,
+      "visa_residency_annual": 0,
+      "contingency_pct": 0.1
+    },
+    "luxury_family": {
+      "description": "Family of four — private school, house in Mercer Island/Bellevue",
+      "groceries_monthly": 2200,
+      "dining_out_monthly": 2500,
+      "transport_monthly": 1400,
+      "healthcare_monthly": 2800,
+      "utilities_monthly": 400,
+      "internet_mobile_monthly": 250,
+      "entertainment_monthly": 1400,
+      "personal_services_monthly": 800,
+      "domestic_help_monthly": 2500,
+      "luxury_misc_monthly": 1200,
+      "education_annual": 90000,
+      "travel_annual": 30000,
+      "legal_tax_compliance_annual": 8000,
+      "visa_residency_annual": 0,
+      "contingency_pct": 0.12
+    }
+  }
+}

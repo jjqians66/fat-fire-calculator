@@ -1,0 +1,13 @@
+{
+  "defaultSwr": 0.0325,
+  "defaultRealReturn": 0.05,
+  "defaultInflation": 0.025,
+  "defaultRetirementAge": 45,
+  "defaultLifeExpectancy": 95,
+  "defaultPortfolio": {
+    "taxablePct": 0.7,
+    "traditionalPct": 0.2,
+    "rothPct": 0.1,
+    "costBasisPct": 0.65
+  }
+}

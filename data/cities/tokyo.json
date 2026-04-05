@@ -1,0 +1,84 @@
+{
+  "slug": "tokyo",
+  "name": "Tokyo",
+  "country": "Japan",
+  "currency": "JPY",
+  "locale": "ja-JP",
+  "lastUpdated": "2026-Q1",
+  "sources": [
+    "Numbeo Cost of Living 2026-01",
+    "Mercer Cost of Living Survey 2025",
+    "Japan Statistics Bureau 2025"
+  ],
+  "fx": {
+    "referenceRateUsdPerLocal": 0.0067,
+    "asOf": "2026-01-15",
+    "note": "USD per JPY, approx 149 JPY = 1 USD"
+  },
+  "housing": {
+    "rent_1br_central_monthly": 220000,
+    "rent_3br_central_monthly": 520000,
+    "rent_1br_suburb_monthly": 130000,
+    "rent_3br_suburb_monthly": 280000,
+    "buy_price_per_sqm_central": 2100000,
+    "buy_price_per_sqm_suburb": 900000,
+    "property_tax_annual_pct": 0.014,
+    "maintenance_annual_pct": 0.01
+  },
+  "tiers": {
+    "true_fat_fire": {
+      "description": "Uncompromised lifestyle — Azabu/Hiroo, no trade-offs",
+      "groceries_monthly": 180000,
+      "dining_out_monthly": 400000,
+      "transport_monthly": 90000,
+      "healthcare_monthly": 120000,
+      "utilities_monthly": 35000,
+      "internet_mobile_monthly": 18000,
+      "entertainment_monthly": 150000,
+      "personal_services_monthly": 100000,
+      "domestic_help_monthly": 150000,
+      "luxury_misc_monthly": 150000,
+      "education_annual": 4500000,
+      "travel_annual": 3000000,
+      "legal_tax_compliance_annual": 800000,
+      "visa_residency_annual": 200000,
+      "contingency_pct": 0.1
+    },
+    "comfortable_expat": {
+      "description": "Comfortable Shibuya/Meguro apartment, regular dining, moderate travel",
+      "groceries_monthly": 95000,
+      "dining_out_monthly": 120000,
+      "transport_monthly": 25000,
+      "healthcare_monthly": 48000,
+      "utilities_monthly": 25000,
+      "internet_mobile_monthly": 12000,
+      "entertainment_monthly": 60000,
+      "personal_services_monthly": 35000,
+      "domestic_help_monthly": 40000,
+      "luxury_misc_monthly": 40000,
+      "education_annual": 2500000,
+      "travel_annual": 1200000,
+      "legal_tax_compliance_annual": 400000,
+      "visa_residency_annual": 150000,
+      "contingency_pct": 0.1
+    },
+    "luxury_family": {
+      "description": "Family of four — international school, domestic help, premium housing",
+      "groceries_monthly": 220000,
+      "dining_out_monthly": 250000,
+      "transport_monthly": 120000,
+      "healthcare_monthly": 180000,
+      "utilities_monthly": 45000,
+      "internet_mobile_monthly": 25000,
+      "entertainment_monthly": 120000,
+      "personal_services_monthly": 80000,
+      "domestic_help_monthly": 200000,
+      "luxury_misc_monthly": 100000,
+      "education_annual": 12000000,
+      "travel_annual": 2500000,
+      "legal_tax_compliance_annual": 800000,
+      "visa_residency_annual": 400000,
+      "contingency_pct": 0.12
+    }
+  }
+}

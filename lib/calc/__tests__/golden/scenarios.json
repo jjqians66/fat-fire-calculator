@@ -1,0 +1,33 @@
+{
+  "$comment": "Hand-verified reference scenarios. Update fixtures intentionally only.",
+  "scenarios": [
+    {
+      "name": "Tokyo comfortable_expat, couple, rent 1br central, CA, 70/20/10 @ 65% basis, 3.25% SWR",
+      "city": "tokyo",
+      "inputs": {
+        "tier": "comfortable_expat",
+        "household": "couple",
+        "kidsCount": 0,
+        "housingMode": "rent",
+        "housingArea": "central",
+        "housingSize": "1br",
+        "homeSqm": 0,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 0.7,
+          "traditionalPct": 0.2,
+          "rothPct": 0.1,
+          "costBasisPct": 0.65
+        },
+        "usStateCode": "CA",
+        "swr": 0.0325,
+        "withdrawalStrategy": "proportional",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 2508617.8449457753
+      }
+    }
+  ]
+}

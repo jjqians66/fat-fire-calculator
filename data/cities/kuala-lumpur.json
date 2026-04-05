@@ -1,0 +1,84 @@
+{
+  "slug": "kuala-lumpur",
+  "name": "Kuala Lumpur",
+  "country": "Malaysia",
+  "currency": "MYR",
+  "locale": "ms-MY",
+  "lastUpdated": "2026-Q1",
+  "sources": [
+    "Numbeo 2026-01",
+    "Mercer 2025",
+    "ExpatFocus Malaysia 2025"
+  ],
+  "fx": {
+    "referenceRateUsdPerLocal": 0.22,
+    "asOf": "2026-01-15",
+    "note": "approx 4.5 MYR = 1 USD"
+  },
+  "housing": {
+    "rent_1br_central_monthly": 3500,
+    "rent_3br_central_monthly": 7500,
+    "rent_1br_suburb_monthly": 1800,
+    "rent_3br_suburb_monthly": 4000,
+    "buy_price_per_sqm_central": 14000,
+    "buy_price_per_sqm_suburb": 6500,
+    "property_tax_annual_pct": 0.004,
+    "maintenance_annual_pct": 0.01
+  },
+  "tiers": {
+    "true_fat_fire": {
+      "description": "KLCC/Mont Kiara luxury condo, full-time staff, fine dining",
+      "groceries_monthly": 4500,
+      "dining_out_monthly": 8000,
+      "transport_monthly": 3000,
+      "healthcare_monthly": 2500,
+      "utilities_monthly": 900,
+      "internet_mobile_monthly": 400,
+      "entertainment_monthly": 3500,
+      "personal_services_monthly": 2500,
+      "domestic_help_monthly": 3000,
+      "luxury_misc_monthly": 3500,
+      "education_annual": 90000,
+      "travel_annual": 60000,
+      "legal_tax_compliance_annual": 15000,
+      "visa_residency_annual": 20000,
+      "contingency_pct": 0.1
+    },
+    "comfortable_expat": {
+      "description": "Mont Kiara or Bangsar mid-rise, regular dining, local + intl travel",
+      "groceries_monthly": 2500,
+      "dining_out_monthly": 2500,
+      "transport_monthly": 1200,
+      "healthcare_monthly": 1200,
+      "utilities_monthly": 600,
+      "internet_mobile_monthly": 250,
+      "entertainment_monthly": 1500,
+      "personal_services_monthly": 800,
+      "domestic_help_monthly": 1200,
+      "luxury_misc_monthly": 1000,
+      "education_annual": 50000,
+      "travel_annual": 30000,
+      "legal_tax_compliance_annual": 10000,
+      "visa_residency_annual": 15000,
+      "contingency_pct": 0.1
+    },
+    "luxury_family": {
+      "description": "Family of four — international school, live-in helper, premium housing",
+      "groceries_monthly": 5500,
+      "dining_out_monthly": 5000,
+      "transport_monthly": 3500,
+      "healthcare_monthly": 3500,
+      "utilities_monthly": 1200,
+      "internet_mobile_monthly": 500,
+      "entertainment_monthly": 3000,
+      "personal_services_monthly": 2000,
+      "domestic_help_monthly": 3500,
+      "luxury_misc_monthly": 2500,
+      "education_annual": 220000,
+      "travel_annual": 55000,
+      "legal_tax_compliance_annual": 18000,
+      "visa_residency_annual": 25000,
+      "contingency_pct": 0.12
+    }
+  }
+}

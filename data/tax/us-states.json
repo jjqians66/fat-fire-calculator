@@ -1,0 +1,25 @@
+{
+  "year": 2026,
+  "states": {
+    "NONE": { "name": "No state tax", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "TX": { "name": "Texas", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "FL": { "name": "Florida", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "WA": { "name": "Washington", "capGainsRate": 0.07, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "NV": { "name": "Nevada", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "TN": { "name": "Tennessee", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "SD": { "name": "South Dakota", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "WY": { "name": "Wyoming", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "AK": { "name": "Alaska", "capGainsRate": 0.0, "ordinaryRateTop": 0.0, "treatsLTCGAsOrdinary": false },
+    "NH": { "name": "New Hampshire", "capGainsRate": 0.0, "ordinaryRateTop": 0.05, "treatsLTCGAsOrdinary": false },
+    "CA": { "name": "California", "capGainsRate": 0.133, "ordinaryRateTop": 0.133, "treatsLTCGAsOrdinary": true },
+    "NY": { "name": "New York", "capGainsRate": 0.109, "ordinaryRateTop": 0.109, "treatsLTCGAsOrdinary": true },
+    "OR": { "name": "Oregon", "capGainsRate": 0.099, "ordinaryRateTop": 0.099, "treatsLTCGAsOrdinary": true },
+    "MN": { "name": "Minnesota", "capGainsRate": 0.0985, "ordinaryRateTop": 0.0985, "treatsLTCGAsOrdinary": true },
+    "NJ": { "name": "New Jersey", "capGainsRate": 0.1075, "ordinaryRateTop": 0.1075, "treatsLTCGAsOrdinary": true },
+    "MA": { "name": "Massachusetts", "capGainsRate": 0.09, "ordinaryRateTop": 0.09, "treatsLTCGAsOrdinary": true },
+    "IL": { "name": "Illinois", "capGainsRate": 0.0495, "ordinaryRateTop": 0.0495, "treatsLTCGAsOrdinary": true },
+    "CO": { "name": "Colorado", "capGainsRate": 0.044, "ordinaryRateTop": 0.044, "treatsLTCGAsOrdinary": true },
+    "AZ": { "name": "Arizona", "capGainsRate": 0.025, "ordinaryRateTop": 0.025, "treatsLTCGAsOrdinary": true }
+  },
+  "notes": "Top marginal rates from the implementation plan. Use verified state sources before launch."
+}
