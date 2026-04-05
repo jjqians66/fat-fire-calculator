@@ -27,7 +27,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "Pacific Heights/Russian Hill luxury, full lifestyle",
+      "description": "Pacific Heights/Russian Hill 2-3BR luxury apartment, Michelin dining monthly, weekly housekeeping, 3+ international trips plus Napa weekends.",
       "groceries_monthly": 2200,
       "dining_out_monthly": 4500,
       "transport_monthly": 1100,
@@ -45,7 +45,7 @@
       "contingency_pct": 0.1
     },
     "comfortable_expat": {
-      "description": "Mission/Hayes Valley mid-tier apartment",
+      "description": "Mission/Hayes Valley/Noe Valley 1BR apartment, dining out 3 nights/week, Muni plus rideshares, 1-2 international trips plus wine country weekends.",
       "groceries_monthly": 1200,
       "dining_out_monthly": 1500,
       "transport_monthly": 450,
@@ -63,7 +63,7 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Family of four — private school, house in Noe Valley/Presidio Heights",
+      "description": "Noe Valley/Presidio Heights 4BR house, private school tuition (Town/Hamlin/SF Day), nanny or au pair, international plus ski trips annually.",
       "groceries_monthly": 2700,
       "dining_out_monthly": 3000,
       "transport_monthly": 1600,

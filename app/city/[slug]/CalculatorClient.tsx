@@ -390,33 +390,47 @@ export function CalculatorClient({
           </InputSection>
 
           <InputSection title="Lifestyle tier">
-            <Select
-              label="Tier"
-              value={inputs.tier}
-              options={tierOptions}
-              onChange={(value) => updateInputs({ ...inputs, tier: value })}
-            />
-            <p className="mt-2 text-xs leading-relaxed text-neutral-600">
-              {city.tiers[inputs.tier].description}
+            <p className="mb-3 text-xs text-neutral-500">
+              Pick a lifestyle baseline tailored to {city.name}. Individual
+              categories remain editable below.
             </p>
-            <ul className="mt-3 space-y-1.5 text-[11px] text-neutral-500">
-              {tierOptions.map((opt) => (
-                <li key={opt.value} className="flex gap-2">
-                  <span
-                    className={
-                      opt.value === inputs.tier
-                        ? "font-semibold text-neutral-900"
-                        : "text-neutral-500"
+            <div className="space-y-2">
+              {tierOptions.map((opt) => {
+                const selected = opt.value === inputs.tier;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() =>
+                      updateInputs({ ...inputs, tier: opt.value })
                     }
+                    className={`w-full rounded-2xl border px-4 py-3 text-left transition ${
+                      selected
+                        ? "border-[var(--accent)] bg-[var(--accent)]/5 shadow-sm"
+                        : "border-black/10 bg-white hover:border-black/20"
+                    }`}
                   >
-                    {opt.label}:
-                  </span>
-                  <span className="text-neutral-500">
-                    {city.tiers[opt.value].description}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`text-sm font-semibold ${
+                          selected ? "text-[var(--accent)]" : "text-neutral-900"
+                        }`}
+                      >
+                        {opt.label}
+                      </span>
+                      {selected ? (
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--accent)]">
+                          Selected
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="mt-1.5 text-xs leading-relaxed text-neutral-600">
+                      {city.tiers[opt.value].description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
           </InputSection>
 
           <InputSection title="Housing">

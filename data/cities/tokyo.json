@@ -28,7 +28,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "Uncompromised lifestyle — Azabu/Hiroo, no trade-offs",
+      "description": "Azabu/Hiroo/Aoyama 3-4BR tower with concierge. Michelin-track dinners weekly, omakase monthly, private car. 3-4 international trips plus domestic getaways annually.",
       "groceries_monthly": 180000,
       "dining_out_monthly": 400000,
       "transport_monthly": 90000,
@@ -46,7 +46,7 @@
       "contingency_pct": 0.1
     },
     "comfortable_expat": {
-      "description": "Comfortable Shibuya/Meguro apartment, regular dining, moderate travel",
+      "description": "Shibuya/Meguro/Nakameguro 1-2BR mid-rise. Izakaya 2-3 nights/week with occasional omakase, trains plus taxis, one long international trip plus weekend onsen getaways.",
       "groceries_monthly": 95000,
       "dining_out_monthly": 120000,
       "transport_monthly": 25000,
@@ -64,7 +64,7 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Family of four — international school, domestic help, premium housing",
+      "description": "Hiroo/Motoazabu 3-4BR family apartment, weekly housekeeping. ASIJ or Nishimachi tuition, driver for school run, two international trips plus ski/beach breaks.",
       "groceries_monthly": 220000,
       "dining_out_monthly": 250000,
       "transport_monthly": 120000,

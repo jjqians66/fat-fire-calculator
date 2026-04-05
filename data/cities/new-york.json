@@ -27,7 +27,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "UES/Tribeca/West Village luxury, full lifestyle",
+      "description": "UES/Tribeca/West Village 2-3BR condo with doorman, Michelin-tier dining monthly, weekly housekeeping, 3+ international trips plus Hamptons summers.",
       "groceries_monthly": 2400,
       "dining_out_monthly": 5500,
       "transport_monthly": 1000,
@@ -45,7 +45,7 @@
       "contingency_pct": 0.1
     },
     "comfortable_expat": {
-      "description": "Brooklyn/LIC/UWS mid-tier apartment",
+      "description": "Brooklyn/LIC/UWS 1BR rental, dining out 3-4 nights/week, subway plus Ubers, 1-2 international trips plus Northeast weekends.",
       "groceries_monthly": 1300,
       "dining_out_monthly": 1800,
       "transport_monthly": 400,
@@ -63,7 +63,7 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Family of four — private school, UES classic 6 or brownstone",
+      "description": "UES classic 6 or brownstone, private school tuition (Dalton/Trinity/Spence-tier), part-time nanny, international and Hamptons/ski trips annually.",
       "groceries_monthly": 2900,
       "dining_out_monthly": 3500,
       "transport_monthly": 1500,

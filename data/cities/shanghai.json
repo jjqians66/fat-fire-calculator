@@ -28,7 +28,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "Former French Concession / Lujiazui luxury, full lifestyle",
+      "description": "Former French Concession lane house or Lujiazui penthouse with live-in ayi plus driver. Private-kitchen dinners weekly, wine club, 3+ international trips annually.",
       "groceries_monthly": 12000,
       "dining_out_monthly": 25000,
       "transport_monthly": 7000,
@@ -46,7 +46,7 @@
       "contingency_pct": 0.12
     },
     "comfortable_expat": {
-      "description": "Jing'an or Xintiandi mid-tier, regular dining, moderate travel",
+      "description": "Jing'an/Xintiandi/FFC 2BR serviced apartment. Dining out 3-4 nights/week mixing Chinese and Western, part-time ayi, regional travel plus one long-haul trip.",
       "groceries_monthly": 6000,
       "dining_out_monthly": 8000,
       "transport_monthly": 2500,
@@ -64,7 +64,7 @@
       "contingency_pct": 0.12
     },
     "luxury_family": {
-      "description": "Family of four — international school, ayi, premium compound",
+      "description": "Changning/Minhang compound house near SAS or BISS, full-time ayi plus driver, international school tuition, annual ski/beach plus summer home-country trip.",
       "groceries_monthly": 14000,
       "dining_out_monthly": 15000,
       "transport_monthly": 8000,

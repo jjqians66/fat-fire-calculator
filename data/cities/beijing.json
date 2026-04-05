@@ -28,7 +28,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "Sanlitun / CBD luxury, full lifestyle",
+      "description": "Sanlitun/CBD high-floor apartment or Shunyi villa, full-time ayi plus driver, fine dining weekly, air-purifier suite, 3+ international escapes annually.",
       "groceries_monthly": 11000,
       "dining_out_monthly": 22000,
       "transport_monthly": 6500,
@@ -46,7 +46,7 @@
       "contingency_pct": 0.12
     },
     "comfortable_expat": {
-      "description": "Chaoyang / Dongcheng mid-tier, regular dining",
+      "description": "Chaoyang/Dongcheng 2BR hutong-adjacent or mid-rise, dining out 3-4 nights/week, part-time ayi, weekend trips plus annual international.",
       "groceries_monthly": 5500,
       "dining_out_monthly": 7000,
       "transport_monthly": 2200,
@@ -64,7 +64,7 @@
       "contingency_pct": 0.12
     },
     "luxury_family": {
-      "description": "Family of four — international school, ayi, premium compound",
+      "description": "Shunyi villa compound near WAB/ISB, full-time ayi plus driver, international school tuition, frequent air-quality escapes plus annual home-country trip.",
       "groceries_monthly": 13000,
       "dining_out_monthly": 13000,
       "transport_monthly": 7500,

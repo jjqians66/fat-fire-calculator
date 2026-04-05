@@ -28,7 +28,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "Coal Harbour/Yaletown luxury, full lifestyle",
+      "description": "Coal Harbour/Yaletown penthouse or West Side house, weekly housekeeping, premium dining scene, 3+ international trips plus Whistler season pass.",
       "groceries_monthly": 2000,
       "dining_out_monthly": 3800,
       "transport_monthly": 1000,
@@ -46,7 +46,7 @@
       "contingency_pct": 0.1
     },
     "comfortable_expat": {
-      "description": "Kitsilano/Mount Pleasant mid-tier",
+      "description": "Kitsilano/Mount Pleasant/Main St 1BR condo, dining out 2-3 nights/week, transit and car share, hiking/ski weekends plus 1-2 international trips.",
       "groceries_monthly": 1100,
       "dining_out_monthly": 1200,
       "transport_monthly": 400,
@@ -64,7 +64,7 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Family of four — West Side house, private school",
+      "description": "West Side (Kerrisdale/Dunbar) 4BR house, private school tuition (St Georges/Crofton/York House), annual international plus weekly Whistler skiing in season.",
       "groceries_monthly": 2500,
       "dining_out_monthly": 2700,
       "transport_monthly": 1400,

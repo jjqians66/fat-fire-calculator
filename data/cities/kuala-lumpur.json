@@ -28,7 +28,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "KLCC/Mont Kiara luxury condo, full-time staff, fine dining",
+      "description": "KLCC/Mont Kiara 2,500+ sqft condo with pool and gym, live-in helper plus part-time driver. Fine dining weekly, weekend Bali/Phuket trips, premium private healthcare.",
       "groceries_monthly": 4500,
       "dining_out_monthly": 8000,
       "transport_monthly": 3000,
@@ -46,7 +46,7 @@
       "contingency_pct": 0.1
     },
     "comfortable_expat": {
-      "description": "Mont Kiara or Bangsar mid-rise, regular dining, local + intl travel",
+      "description": "Mont Kiara/Bangsar mid-rise 2BR condo. Casual dining nightly, part-time helper 2-3 days/week, 1-2 regional trips plus annual Europe/US visit.",
       "groceries_monthly": 2500,
       "dining_out_monthly": 2500,
       "transport_monthly": 1200,
@@ -64,7 +64,7 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Family of four — international school, live-in helper, premium housing",
+      "description": "Mont Kiara villa or low-rise 3-4BR with pool, live-in helper plus driver. ISKL or Alice Smith tuition, regional weekend trips plus annual long-haul.",
       "groceries_monthly": 5500,
       "dining_out_monthly": 5000,
       "transport_monthly": 3500,

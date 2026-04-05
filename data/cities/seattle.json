@@ -27,7 +27,7 @@
   },
   "tiers": {
     "true_fat_fire": {
-      "description": "Downtown/Belltown luxury high-rise, full lifestyle",
+      "description": "Belltown/Downtown high-rise 2-3BR with view, weekly housekeeping, Canlis-tier dining monthly, 3+ international trips plus domestic ski/BC weekends.",
       "groceries_monthly": 1800,
       "dining_out_monthly": 3500,
       "transport_monthly": 900,
@@ -45,7 +45,7 @@
       "contingency_pct": 0.1
     },
     "comfortable_expat": {
-      "description": "Capitol Hill/Fremont mid-tier apartment, regular dining",
+      "description": "Capitol Hill/Fremont/Ballard 1BR apartment, dining out 2-3 nights/week, bike and transit, summer PNW trips plus 1-2 international annually.",
       "groceries_monthly": 1000,
       "dining_out_monthly": 1200,
       "transport_monthly": 400,
@@ -63,7 +63,7 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Family of four — private school, house in Mercer Island/Bellevue",
+      "description": "Mercer Island or Bellevue 4BR house, private school tuition (Lakeside/Bush/Eastside Prep), annual international and ski trips, occasional housekeeper.",
       "groceries_monthly": 2200,
       "dining_out_monthly": 2500,
       "transport_monthly": 1400,
