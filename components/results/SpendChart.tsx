@@ -21,6 +21,19 @@ interface SpendChartProps {
   sourceTitle?: string;
 }
 
+const ROW_HEIGHT = 32;
+const CHART_PADDING = 120;
+
+function formatUsd(value: number): string {
+  if (value >= 1_000_000) {
+    return `$${(value / 1_000_000).toFixed(1)}M`;
+  }
+  if (value >= 1000) {
+    return `$${Math.round(value / 1000)}k`;
+  }
+  return `$${Math.round(value)}`;
+}
+
 export function SpendChart({
   baselineTier,
   adjustedTier,
@@ -29,8 +42,8 @@ export function SpendChart({
   adjustedHousingLocal,
   sourceTitle,
 }: SpendChartProps) {
-  const { ref, width, height } = useMeasuredDimensions();
-  const data = [
+  const { ref, width } = useMeasuredDimensions();
+  const rawData = [
     {
       name: "Housing",
       baseline: baselineHousingLocal * fxUsdPerLocal,
@@ -42,7 +55,7 @@ export function SpendChart({
       adjusted: adjustedTier.groceries_monthly * 12 * fxUsdPerLocal,
     },
     {
-      name: "Dining",
+      name: "Dining out",
       baseline: baselineTier.dining_out_monthly * 12 * fxUsdPerLocal,
       adjusted: adjustedTier.dining_out_monthly * 12 * fxUsdPerLocal,
     },
@@ -62,7 +75,7 @@ export function SpendChart({
       adjusted: adjustedTier.utilities_monthly * 12 * fxUsdPerLocal,
     },
     {
-      name: "Internet",
+      name: "Internet / mobile",
       baseline: baselineTier.internet_mobile_monthly * 12 * fxUsdPerLocal,
       adjusted: adjustedTier.internet_mobile_monthly * 12 * fxUsdPerLocal,
     },
@@ -72,7 +85,7 @@ export function SpendChart({
       adjusted: adjustedTier.entertainment_monthly * 12 * fxUsdPerLocal,
     },
     {
-      name: "Personal",
+      name: "Personal services",
       baseline: baselineTier.personal_services_monthly * 12 * fxUsdPerLocal,
       adjusted: adjustedTier.personal_services_monthly * 12 * fxUsdPerLocal,
     },
@@ -102,11 +115,17 @@ export function SpendChart({
       adjusted: adjustedTier.legal_tax_compliance_annual * fxUsdPerLocal,
     },
     {
-      name: "Visa",
+      name: "Visa / residency",
       baseline: baselineTier.visa_residency_annual * fxUsdPerLocal,
       adjusted: adjustedTier.visa_residency_annual * fxUsdPerLocal,
     },
   ].filter((entry) => entry.baseline > 0 || entry.adjusted > 0);
+
+  const data = [...rawData].sort(
+    (a, b) => Math.max(b.baseline, b.adjusted) - Math.max(a.baseline, a.adjusted)
+  );
+
+  const chartHeight = data.length * ROW_HEIGHT + CHART_PADDING;
 
   return (
     <div className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
@@ -114,37 +133,72 @@ export function SpendChart({
         Annual spend by category
       </h3>
       <p className="mt-1 text-xs text-neutral-500">
-        Baseline preset vs your current overrides, converted to USD.
+        Baseline preset vs your current overrides, sorted by size, in USD.
       </p>
-      <div ref={ref} className="mt-4 h-[360px] min-w-0" title={sourceTitle}>
-        {width > 16 && height > 16 ? (
+      <div
+        ref={ref}
+        className="mt-4 min-w-0"
+        style={{ height: chartHeight }}
+        title={sourceTitle}
+      >
+        {width > 16 ? (
           <BarChart
             width={Math.max(width, 320)}
-            height={Math.max(height, 360)}
+            height={chartHeight}
             data={data}
             layout="vertical"
-            margin={{ left: 32, right: 12 }}
+            margin={{ left: 8, right: 24, top: 8, bottom: 8 }}
+            barCategoryGap={6}
+            barGap={2}
           >
             <CartesianGrid
+              horizontal={false}
               strokeDasharray="3 3"
               stroke="rgba(17,24,39,0.08)"
             />
-            <Legend />
+            <Legend
+              verticalAlign="top"
+              align="right"
+              iconType="circle"
+              iconSize={8}
+              wrapperStyle={{ fontSize: 12, paddingBottom: 12 }}
+              formatter={(value) =>
+                value === "adjusted" ? "Your overrides" : "City baseline"
+              }
+            />
             <XAxis
               type="number"
-              tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              tickCount={6}
+              tick={{ fontSize: 11, fill: "#64748b" }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={formatUsd}
             />
-            <YAxis type="category" dataKey="name" width={96} />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={130}
+              tick={{ fontSize: 12, fill: "#334155" }}
+              axisLine={false}
+              tickLine={false}
+              interval={0}
+            />
             <Tooltip
+              cursor={{ fill: "rgba(15,118,110,0.06)" }}
+              contentStyle={{
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.08)",
+                fontSize: 12,
+              }}
               formatter={(value, name) => [
                 `$${Number(value ?? 0).toLocaleString("en-US", {
                   maximumFractionDigits: 0,
                 })}`,
-                name === "baseline" ? "Baseline" : "Adjusted",
+                name === "baseline" ? "City baseline" : "Your overrides",
               ]}
             />
-            <Bar dataKey="baseline" fill="#94a3b8" radius={[0, 10, 10, 0]} />
-            <Bar dataKey="adjusted" fill="#0f766e" radius={[0, 10, 10, 0]} />
+            <Bar dataKey="baseline" fill="#cbd5e1" barSize={10} />
+            <Bar dataKey="adjusted" fill="#0f766e" barSize={10} />
           </BarChart>
         ) : (
           <div className="h-full rounded-2xl bg-neutral-100" />

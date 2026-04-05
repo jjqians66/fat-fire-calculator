@@ -52,6 +52,7 @@ export interface CityData {
   locale: string;
   lastUpdated: string;
   sources: string[];
+  lifestyle?: string;
   fx: FxSnapshot;
   housing: HousingData;
   tiers: Record<TierKey, TierCosts>;

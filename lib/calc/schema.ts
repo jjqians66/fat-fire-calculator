@@ -49,6 +49,7 @@ export const CityDataSchema = z.object({
   sources: z
     .array(z.string().regex(/\b20\d{2}\b/, "Source must include a year"))
     .min(2),
+  lifestyle: z.string().min(40).optional(),
   fx: FxSnapshotSchema,
   housing: HousingDataSchema,
   tiers: z.object({

@@ -10,6 +10,7 @@
     "Stats Canada 2025",
     "CMHC Rental Report 2025"
   ],
+  "lifestyle": "Mild-climate West Coast city with mountain and ocean access, multicultural neighborhoods, and strong public healthcare. Housing costs are among the highest in North America and foreign-buyer / vacancy taxes complicate property ownership. This model assumes US tax residency; actual Canadian residency triggers separate federal and BC taxation.",
   "fx": {
     "referenceRateUsdPerLocal": 0.73,
     "asOf": "2026-01-15",

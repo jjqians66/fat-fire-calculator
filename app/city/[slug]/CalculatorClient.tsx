@@ -291,6 +291,11 @@ export function CalculatorClient({
           <p className="mt-2 text-sm text-neutral-600">
             {city.country} · {city.currency} · Updated {city.lastUpdated}
           </p>
+          {city.lifestyle ? (
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-700">
+              {city.lifestyle}
+            </p>
+          ) : null}
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <button
@@ -391,6 +396,27 @@ export function CalculatorClient({
               options={tierOptions}
               onChange={(value) => updateInputs({ ...inputs, tier: value })}
             />
+            <p className="mt-2 text-xs leading-relaxed text-neutral-600">
+              {city.tiers[inputs.tier].description}
+            </p>
+            <ul className="mt-3 space-y-1.5 text-[11px] text-neutral-500">
+              {tierOptions.map((opt) => (
+                <li key={opt.value} className="flex gap-2">
+                  <span
+                    className={
+                      opt.value === inputs.tier
+                        ? "font-semibold text-neutral-900"
+                        : "text-neutral-500"
+                    }
+                  >
+                    {opt.label}:
+                  </span>
+                  <span className="text-neutral-500">
+                    {city.tiers[opt.value].description}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </InputSection>
 
           <InputSection title="Housing">
