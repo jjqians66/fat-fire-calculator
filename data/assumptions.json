@@ -4,6 +4,12 @@
   "defaultInflation": 0.025,
   "defaultRetirementAge": 45,
   "defaultLifeExpectancy": 95,
+  "defaultStockAllocationPct": 0.6,
+  "monteCarlo": {
+    "defaultTrials": 10000,
+    "stockVolatility": 0.18,
+    "bondVolatility": 0.05
+  },
   "defaultPortfolio": {
     "taxablePct": 0.7,
     "traditionalPct": 0.2,

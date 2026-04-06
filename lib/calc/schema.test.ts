@@ -7,6 +7,11 @@ import { FederalTaxDataSchema, StateTaxDataSchema } from "./schema";
 function makeTier(desc: string) {
   return {
     description: desc,
+    guide: {
+      groceries: "Premium local grocery mix plus occasional imported staples.",
+      dining: "A few casual meals out each week plus a nicer dinner periodically.",
+      rhythm: "Routine transport, services, and leisure spending consistent with the tier.",
+    },
     groceries_monthly: 100000,
     dining_out_monthly: 100000,
     transport_monthly: 50000,

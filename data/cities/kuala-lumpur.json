@@ -29,6 +29,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "KLCC/Mont Kiara 2,500+ sqft condo with pool and gym, live-in helper plus part-time driver. Fine dining weekly, weekend Bali/Phuket trips, premium private healthcare.",
+      "guide": {
+        "groceries": "Village Grocer and imported-food baskets plus fresh-market top-ups: premium fruit, Australian beef, seafood, wine, and household staples without much price sensitivity.",
+        "dining": "Several polished meals out each week, hotel brunches, and regular chef-driven dinners, with nicer nights often around RM250-600 per person.",
+        "rhythm": "Grab or driver-led mobility, club or spa spending, easy household staffing, and a travel pattern that treats regional luxury weekends as routine."
+      },
       "groceries_monthly": 4500,
       "dining_out_monthly": 8000,
       "transport_monthly": 3000,
@@ -47,6 +52,11 @@
     },
     "comfortable_expat": {
       "description": "Mont Kiara/Bangsar mid-rise 2BR condo. Casual dining nightly, part-time helper 2-3 days/week, 1-2 regional trips plus annual Europe/US visit.",
+      "guide": {
+        "groceries": "Expat-friendly supermarkets plus wet-market top-ups: imported dairy and pantry staples, solid produce, and a comfortable but not extravagant at-home kitchen.",
+        "dining": "Casual dining 2-3 times a week and a nicer dinner every few weeks, usually around RM40-100 per person casually and RM180-350 on a bigger night.",
+        "rhythm": "Mostly Grab, moderate wellness or grooming, occasional help for cleaning, and a lifestyle that leans into regional convenience rather than nonstop luxury."
+      },
       "groceries_monthly": 2500,
       "dining_out_monthly": 2500,
       "transport_monthly": 1200,
@@ -64,7 +74,12 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Mont Kiara villa or low-rise 3-4BR with pool, live-in helper plus driver. ISKL or Alice Smith tuition, regional weekend trips plus annual long-haul.",
+      "description": "Mont Kiara villa or low-rise 3-4BR with pool, live-in helper plus driver. Top international school access (ISKL / Alice Smith) when dependents apply, regional weekend trips plus annual long-haul.",
+      "guide": {
+        "groceries": "Large family basket across premium grocers and bulk runs: imported snacks, good fruit, higher-end proteins, school provisioning, and easy entertaining at home.",
+        "dining": "Family brunches or dinners most weekends plus adult meals out, with relaxed family meals often RM60-140 per person and nicer venues far above that.",
+        "rhythm": "Live-in household help, driver coverage when needed, club or activity spending for children, and frequent short-haul breaks around Southeast Asia."
+      },
       "groceries_monthly": 5500,
       "dining_out_monthly": 5000,
       "transport_monthly": 3500,

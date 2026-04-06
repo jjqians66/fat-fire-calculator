@@ -29,6 +29,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "Sanlitun/CBD high-floor apartment or Shunyi villa, full-time ayi plus driver, fine dining weekly, air-purifier suite, 3+ international escapes annually.",
+      "guide": {
+        "groceries": "Imported-food baskets, embassy-area premium grocers, and high-quality fruit, meat, and wine at home without much budget pressure.",
+        "dining": "Embassy-zone or hotel dining several times a week, duck or banquet meals regularly, with nicer nights often RMB800-1,800 per person.",
+        "rhythm": "Driver support, ayi coverage, premium indoor wellness, and a travel pattern that treats air-quality escapes and long weekends as routine."
+      },
       "groceries_monthly": 11000,
       "dining_out_monthly": 22000,
       "transport_monthly": 6500,
@@ -47,6 +52,11 @@
     },
     "comfortable_expat": {
       "description": "Chaoyang/Dongcheng 2BR hutong-adjacent or mid-rise, dining out 3-4 nights/week, part-time ayi, weekend trips plus annual international.",
+      "guide": {
+        "groceries": "A mix of Hema, Jenny Lou's-style imported shelves, and local produce or meat restocks for a comfortable expat kitchen.",
+        "dining": "Restaurants a few nights a week plus the occasional nicer dinner, often RMB120-240 per person casually and RMB500-1,000 on a bigger night.",
+        "rhythm": "Subway plus Didi, moderate wellness and grooming, periodic housekeeping help, and domestic or regional breaks rather than nonstop luxury travel."
+      },
       "groceries_monthly": 5500,
       "dining_out_monthly": 7000,
       "transport_monthly": 2200,
@@ -64,7 +74,12 @@
       "contingency_pct": 0.12
     },
     "luxury_family": {
-      "description": "Shunyi villa compound near WAB/ISB, full-time ayi plus driver, international school tuition, frequent air-quality escapes plus annual home-country trip.",
+      "description": "Shunyi villa compound near WAB/ISB, full-time ayi plus driver, top international school access when dependents apply, frequent air-quality escapes plus annual home-country trip.",
+      "guide": {
+        "groceries": "Large family provisioning through imported grocers, warehouse-style top-ups, and bulk delivery with school, snack, and home-entertaining needs built in.",
+        "dining": "Family compound or hotel dining most weekends plus adult meals out, with casual family meals often RMB150-300 per person and special dinners well above that.",
+        "rhythm": "Ayi and driver support, premium school logistics, indoor sports or tutoring, and regular escape travel timed around school breaks and weather."
+      },
       "groceries_monthly": 13000,
       "dining_out_monthly": 13000,
       "transport_monthly": 7500,

@@ -29,6 +29,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "Former French Concession lane house or Lujiazui penthouse with live-in ayi plus driver. Private-kitchen dinners weekly, wine club, 3+ international trips annually.",
+      "guide": {
+        "groceries": "Hema, imported grocers, and premium online delivery baskets with strong seafood, fruit, wine, and imported pantry coverage.",
+        "dining": "Fine dining, hotel bars, and chef-led tasting menus show up regularly, with nicer nights often around RMB800-2,000 per person.",
+        "rhythm": "Driver and ayi support, high-touch delivery culture, premium gyms or wellness, and a social calendar centered on restaurants, bars, and luxury retail."
+      },
       "groceries_monthly": 12000,
       "dining_out_monthly": 25000,
       "transport_monthly": 7000,
@@ -47,6 +52,11 @@
     },
     "comfortable_expat": {
       "description": "Jing'an/Xintiandi/FFC 2BR serviced apartment. Dining out 3-4 nights/week mixing Chinese and Western, part-time ayi, regional travel plus one long-haul trip.",
+      "guide": {
+        "groceries": "A mix of Hema, Sam's-style bulk restocks, and imported shelves for cheese, coffee, wine, and better proteins without going fully elite.",
+        "dining": "Comfortable restaurant spending 2-3 times a week plus a nicer dinner every month or so, often RMB120-250 casually and RMB600-1,200 when stepping up.",
+        "rhythm": "Mostly metro plus rideshare, delivery-heavy convenience, regular salon or wellness spend, and short regional trips layered into city life."
+      },
       "groceries_monthly": 6000,
       "dining_out_monthly": 8000,
       "transport_monthly": 2500,
@@ -64,7 +74,12 @@
       "contingency_pct": 0.12
     },
     "luxury_family": {
-      "description": "Changning/Minhang compound house near SAS or BISS, full-time ayi plus driver, international school tuition, annual ski/beach plus summer home-country trip.",
+      "description": "Changning/Minhang 3-4BR compound house near SAS or BISS, full-time ayi plus driver, top international school access when dependents apply, annual ski/beach plus summer home-country trip.",
+      "guide": {
+        "groceries": "Big family provisioning through imported grocers, Hema, and bulk delivery: school snacks, fruit, proteins, and household staples in volume.",
+        "dining": "Family-friendly mall or hotel dining most weekends plus adult meals out, with casual family meals often RMB150-300 per person and destination dinners much higher.",
+        "rhythm": "Ayi and driver support, premium kid logistics, clubs or tutoring, and an annual calendar built around school breaks and long-haul travel."
+      },
       "groceries_monthly": 14000,
       "dining_out_monthly": 15000,
       "transport_monthly": 8000,

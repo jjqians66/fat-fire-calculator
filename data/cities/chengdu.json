@@ -28,6 +28,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "Jinjiang 3BR high-rise or Lan Kwai Fong luxury apartment, full-time ayi plus driver. Hotpot crawls, private dining, teahouses, 2-3 international trips annually.",
+      "guide": {
+        "groceries": "Imported grocers plus premium local produce and seafood, with high-quality pantry goods, wine, and gift-grade fruit bought without much restraint.",
+        "dining": "Hotpot, modern Sichuan, and hotel dining show up often, with nicer nights commonly around RMB500-1,200 per person.",
+        "rhythm": "Mostly driver or ride-hail, premium wellness and beauty, and a lifestyle that treats boutique hotels and Chengdu-Chongqing leisure as normal."
+      },
       "groceries_monthly": 8000,
       "dining_out_monthly": 15000,
       "transport_monthly": 4500,
@@ -46,6 +51,11 @@
     },
     "comfortable_expat": {
       "description": "Tongzilin/High-Tech Zone 2BR modern apartment, local dining nightly (cheap and excellent), e-bike plus DiDi, monthly regional weekends plus annual long-haul.",
+      "guide": {
+        "groceries": "Comfortable city shopping with Sam's-style bulk runs, imported staples, and strong local produce and meat value for home cooking.",
+        "dining": "Restaurant meals a few times a week plus an occasional nicer dinner, often RMB80-180 casually and RMB300-700 when stepping up.",
+        "rhythm": "Mostly DiDi and metro, moderate personal-care spending, light housekeeping help, and domestic city breaks rather than constant luxury escapes."
+      },
       "groceries_monthly": 4000,
       "dining_out_monthly": 4500,
       "transport_monthly": 1500,
@@ -63,7 +73,12 @@
       "contingency_pct": 0.12
     },
     "luxury_family": {
-      "description": "High-Tech Zone villa or premium compound near QSI/LEA, full-time ayi plus part-time driver, international school tuition, annual home-country trip.",
+      "description": "High-Tech Zone villa or premium compound near QSI/LEA, full-time ayi plus part-time driver, top international school access when dependents apply, annual home-country trip.",
+      "guide": {
+        "groceries": "Large family basket with imported snacks, proteins, fruit, and household staples, supported by easy delivery and bulk-shopping top-ups.",
+        "dining": "Family-friendly dining most weekends plus adult meals out, with casual family meals often RMB100-220 per person and destination dinners materially higher.",
+        "rhythm": "Ayi plus some driver coverage, child activity and school logistics, and an annual rhythm built around school calendars and longer trips."
+      },
       "groceries_monthly": 9000,
       "dining_out_monthly": 9000,
       "transport_monthly": 5500,

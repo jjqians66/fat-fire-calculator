@@ -2,7 +2,181 @@
   "$comment": "Hand-verified reference scenarios. Update fixtures intentionally only.",
   "scenarios": [
     {
-      "name": "Tokyo comfortable_expat, couple, rent 1br central, CA, 70/20/10 @ 65% basis, 3.25% SWR",
+      "name": "Tokyo comfortable_expat, single, rent 1br central, no-state, 100% Roth, 3.25% SWR",
+      "city": "tokyo",
+      "inputs": {
+        "tier": "comfortable_expat",
+        "household": "single",
+        "kidsCount": 0,
+        "housingMode": "rent",
+        "housingArea": "central",
+        "housingSize": "1br",
+        "homeSqm": 0,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 0,
+          "traditionalPct": 0,
+          "rothPct": 1,
+          "costBasisPct": 1
+        },
+        "filingStatus": "single",
+        "usStateCode": "NONE",
+        "swr": 0.0325,
+        "withdrawalStrategy": "proportional",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 2057885.4153846153
+      }
+    },
+    {
+      "name": "Tokyo comfortable_expat, single, rent 1br central, NY, 100% taxable @ 0% basis, 3.25% SWR",
+      "city": "tokyo",
+      "inputs": {
+        "tier": "comfortable_expat",
+        "household": "single",
+        "kidsCount": 0,
+        "housingMode": "rent",
+        "housingArea": "central",
+        "housingSize": "1br",
+        "homeSqm": 0,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 1,
+          "traditionalPct": 0,
+          "rothPct": 0,
+          "costBasisPct": 0
+        },
+        "filingStatus": "single",
+        "usStateCode": "NY",
+        "swr": 0.0325,
+        "withdrawalStrategy": "proportional",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 2469169.4182703695
+      }
+    },
+    {
+      "name": "Tokyo comfortable_expat, single, rent 1br central, no-state, 100% traditional, 3.25% SWR",
+      "city": "tokyo",
+      "inputs": {
+        "tier": "comfortable_expat",
+        "household": "single",
+        "kidsCount": 0,
+        "housingMode": "rent",
+        "housingArea": "central",
+        "housingSize": "1br",
+        "homeSqm": 0,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 0,
+          "traditionalPct": 1,
+          "rothPct": 0,
+          "costBasisPct": 0.65
+        },
+        "filingStatus": "single",
+        "usStateCode": "NONE",
+        "swr": 0.0325,
+        "withdrawalStrategy": "proportional",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 2289990.8834939618
+      }
+    },
+    {
+      "name": "San Francisco luxury_family, single, own 3br suburb, CA, mixed 70/20/10 @ 0% basis, 3.25% SWR",
+      "city": "san-francisco",
+      "inputs": {
+        "tier": "luxury_family",
+        "household": "family",
+        "kidsCount": 2,
+        "housingMode": "own",
+        "housingArea": "suburb",
+        "housingSize": "3br",
+        "homeSqm": 180,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 0.7,
+          "traditionalPct": 0.2,
+          "rothPct": 0.1,
+          "costBasisPct": 0
+        },
+        "filingStatus": "single",
+        "usStateCode": "CA",
+        "swr": 0.0325,
+        "withdrawalStrategy": "proportional",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 29522689.81954632
+      }
+    },
+    {
+      "name": "San Francisco luxury_family, single, own 3br suburb, CA, mixed 70/20/10 @ 65% basis, 3.25% SWR",
+      "city": "san-francisco",
+      "inputs": {
+        "tier": "luxury_family",
+        "household": "family",
+        "kidsCount": 2,
+        "housingMode": "own",
+        "housingArea": "suburb",
+        "housingSize": "3br",
+        "homeSqm": 180,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 0.7,
+          "traditionalPct": 0.2,
+          "rothPct": 0.1,
+          "costBasisPct": 0.65
+        },
+        "filingStatus": "single",
+        "usStateCode": "CA",
+        "swr": 0.0325,
+        "withdrawalStrategy": "proportional",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 23830704.92231463
+      }
+    },
+    {
+      "name": "San Francisco luxury_family, single, own 3br suburb, CA, mixed 70/20/10 @ 100% basis, 3.25% SWR",
+      "city": "san-francisco",
+      "inputs": {
+        "tier": "luxury_family",
+        "household": "family",
+        "kidsCount": 2,
+        "housingMode": "own",
+        "housingArea": "suburb",
+        "housingSize": "3br",
+        "homeSqm": 180,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 0.7,
+          "traditionalPct": 0.2,
+          "rothPct": 0.1,
+          "costBasisPct": 1
+        },
+        "filingStatus": "single",
+        "usStateCode": "CA",
+        "swr": 0.0325,
+        "withdrawalStrategy": "proportional",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 21882781.44451991
+      }
+    },
+    {
+      "name": "Tokyo comfortable_expat, couple MFJ, rent 1br central, CA, mixed 70/20/10 @ 65% basis, proportional, 3.25% SWR",
       "city": "tokyo",
       "inputs": {
         "tier": "comfortable_expat",
@@ -19,6 +193,7 @@
           "rothPct": 0.1,
           "costBasisPct": 0.65
         },
+        "filingStatus": "married_filing_jointly",
         "usStateCode": "CA",
         "swr": 0.0325,
         "withdrawalStrategy": "proportional",
@@ -26,7 +201,36 @@
         "lifeExpectancy": 95
       },
       "expected": {
-        "fireNumberUsd": 2504943.515339434
+        "fireNumberUsd": 2504352.2971305996
+      }
+    },
+    {
+      "name": "Tokyo comfortable_expat, couple MFJ, rent 1br central, CA, mixed 70/20/10 @ 65% basis, tax_optimal, 3.25% SWR",
+      "city": "tokyo",
+      "inputs": {
+        "tier": "comfortable_expat",
+        "household": "couple",
+        "kidsCount": 0,
+        "housingMode": "rent",
+        "housingArea": "central",
+        "housingSize": "1br",
+        "homeSqm": 0,
+        "categoryOverrides": {},
+        "portfolio": {
+          "taxablePct": 0.7,
+          "traditionalPct": 0.2,
+          "rothPct": 0.1,
+          "costBasisPct": 0.65
+        },
+        "filingStatus": "married_filing_jointly",
+        "usStateCode": "CA",
+        "swr": 0.0325,
+        "withdrawalStrategy": "tax_optimal",
+        "retirementAge": 45,
+        "lifeExpectancy": 95
+      },
+      "expected": {
+        "fireNumberUsd": 2471165.0151760047
       }
     }
   ]

@@ -1,3 +1,5 @@
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+
 export function InputSection({
   title,
   description,
@@ -7,6 +9,7 @@ export function InputSection({
   description?: string;
   children: React.ReactNode;
 }) {
+  const { t } = useLocale();
   return (
     <details
       open
@@ -23,7 +26,7 @@ export function InputSection({
             ) : null}
           </div>
           <span className="pt-0.5 text-xs uppercase tracking-[0.18em] text-neutral-400">
-            Toggle
+            {t.ui.toggle}
           </span>
         </div>
       </summary>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMeasuredDimensions } from "@/components/results/useMeasuredDimensions";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import {
   Bar,
   BarChart,
@@ -42,82 +43,86 @@ export function SpendChart({
   adjustedHousingLocal,
   sourceTitle,
 }: SpendChartProps) {
+  const { t, locale } = useLocale();
+  const displayLocale = locale === "zh" ? "zh-CN" : "en-US";
   const { ref, width } = useMeasuredDimensions();
+  const toMonthlyUsd = (localPerMonth: number) => localPerMonth * fxUsdPerLocal;
+  const annualToMonthlyUsd = (localPerYear: number) => (localPerYear / 12) * fxUsdPerLocal;
   const rawData = [
     {
-      name: "Housing",
-      baseline: baselineHousingLocal * fxUsdPerLocal,
-      adjusted: adjustedHousingLocal * fxUsdPerLocal,
+      name: t.calc.categoryLabels.housing,
+      baseline: (baselineHousingLocal / 12) * fxUsdPerLocal,
+      adjusted: (adjustedHousingLocal / 12) * fxUsdPerLocal,
     },
     {
-      name: "Groceries",
-      baseline: baselineTier.groceries_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.groceries_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.groceries,
+      baseline: toMonthlyUsd(baselineTier.groceries_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.groceries_monthly),
     },
     {
-      name: "Dining out",
-      baseline: baselineTier.dining_out_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.dining_out_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.dining_out,
+      baseline: toMonthlyUsd(baselineTier.dining_out_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.dining_out_monthly),
     },
     {
-      name: "Transport",
-      baseline: baselineTier.transport_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.transport_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.transport,
+      baseline: toMonthlyUsd(baselineTier.transport_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.transport_monthly),
     },
     {
-      name: "Healthcare",
-      baseline: baselineTier.healthcare_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.healthcare_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.healthcare,
+      baseline: toMonthlyUsd(baselineTier.healthcare_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.healthcare_monthly),
     },
     {
-      name: "Utilities",
-      baseline: baselineTier.utilities_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.utilities_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.utilities,
+      baseline: toMonthlyUsd(baselineTier.utilities_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.utilities_monthly),
     },
     {
-      name: "Internet / mobile",
-      baseline: baselineTier.internet_mobile_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.internet_mobile_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.internet_mobile,
+      baseline: toMonthlyUsd(baselineTier.internet_mobile_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.internet_mobile_monthly),
     },
     {
-      name: "Entertainment",
-      baseline: baselineTier.entertainment_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.entertainment_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.entertainment,
+      baseline: toMonthlyUsd(baselineTier.entertainment_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.entertainment_monthly),
     },
     {
-      name: "Personal services",
-      baseline: baselineTier.personal_services_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.personal_services_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.personal_services,
+      baseline: toMonthlyUsd(baselineTier.personal_services_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.personal_services_monthly),
     },
     {
-      name: "Domestic help",
-      baseline: baselineTier.domestic_help_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.domestic_help_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.domestic_help,
+      baseline: toMonthlyUsd(baselineTier.domestic_help_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.domestic_help_monthly),
     },
     {
-      name: "Luxury misc",
-      baseline: baselineTier.luxury_misc_monthly * 12 * fxUsdPerLocal,
-      adjusted: adjustedTier.luxury_misc_monthly * 12 * fxUsdPerLocal,
+      name: t.calc.categoryLabels.luxury_misc,
+      baseline: toMonthlyUsd(baselineTier.luxury_misc_monthly),
+      adjusted: toMonthlyUsd(adjustedTier.luxury_misc_monthly),
     },
     {
-      name: "Education",
-      baseline: baselineTier.education_annual * fxUsdPerLocal,
-      adjusted: adjustedTier.education_annual * fxUsdPerLocal,
+      name: t.calc.categoryLabels.education,
+      baseline: annualToMonthlyUsd(baselineTier.education_annual),
+      adjusted: annualToMonthlyUsd(adjustedTier.education_annual),
     },
     {
-      name: "Travel",
-      baseline: baselineTier.travel_annual * fxUsdPerLocal,
-      adjusted: adjustedTier.travel_annual * fxUsdPerLocal,
+      name: t.calc.categoryLabels.travel,
+      baseline: annualToMonthlyUsd(baselineTier.travel_annual),
+      adjusted: annualToMonthlyUsd(adjustedTier.travel_annual),
     },
     {
-      name: "Legal / tax",
-      baseline: baselineTier.legal_tax_compliance_annual * fxUsdPerLocal,
-      adjusted: adjustedTier.legal_tax_compliance_annual * fxUsdPerLocal,
+      name: t.calc.categoryLabels.legal_tax,
+      baseline: annualToMonthlyUsd(baselineTier.legal_tax_compliance_annual),
+      adjusted: annualToMonthlyUsd(adjustedTier.legal_tax_compliance_annual),
     },
     {
-      name: "Visa / residency",
-      baseline: baselineTier.visa_residency_annual * fxUsdPerLocal,
-      adjusted: adjustedTier.visa_residency_annual * fxUsdPerLocal,
+      name: t.calc.categoryLabels.visa_residency,
+      baseline: annualToMonthlyUsd(baselineTier.visa_residency_annual),
+      adjusted: annualToMonthlyUsd(adjustedTier.visa_residency_annual),
     },
   ].filter((entry) => entry.baseline > 0 || entry.adjusted > 0);
 
@@ -130,10 +135,10 @@ export function SpendChart({
   return (
     <div className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
       <h3 className="text-sm font-semibold text-neutral-950">
-        Annual spend by category
+        {t.calc.spendChartTitle}
       </h3>
       <p className="mt-1 text-xs text-neutral-500">
-        Baseline preset vs your current overrides, sorted by size, in USD.
+        {t.calc.spendChartSub}
       </p>
       <div
         ref={ref}
@@ -163,7 +168,7 @@ export function SpendChart({
               iconSize={8}
               wrapperStyle={{ fontSize: 12, paddingBottom: 12 }}
               formatter={(value) =>
-                value === "adjusted" ? "Your overrides" : "City baseline"
+                value === "adjusted" ? t.calc.yourOverrides : t.calc.cityBaseline
               }
             />
             <XAxis
@@ -191,10 +196,10 @@ export function SpendChart({
                 fontSize: 12,
               }}
               formatter={(value, name) => [
-                `$${Number(value ?? 0).toLocaleString("en-US", {
+                `$${Number(value ?? 0).toLocaleString(displayLocale, {
                   maximumFractionDigits: 0,
                 })}`,
-                name === "baseline" ? "City baseline" : "Your overrides",
+                name === "baseline" ? t.calc.cityBaseline : t.calc.yourOverrides,
               ]}
             />
             <Bar dataKey="baseline" fill="#cbd5e1" barSize={10} />

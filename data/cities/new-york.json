@@ -28,6 +28,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "UES/Tribeca/West Village 2-3BR condo with doorman, Michelin-tier dining monthly, weekly housekeeping, 3+ international trips plus Hamptons summers.",
+      "guide": {
+        "groceries": "Whole Foods, Citarella, Union Market, and greenmarket-style shopping with premium produce, seafood, wine, and no real pressure to economize at home.",
+        "dining": "Several polished dinners out most weeks plus tasting-menu or power-dining nights, with bigger dinners often around $200-$400 per person before wine.",
+        "rhythm": "Mostly black car or easy cab use, weekly housekeeping, premium wellness and culture spend, and a lifestyle that assumes Hamptons, ski, and long-haul travel."
+      },
       "groceries_monthly": 2400,
       "dining_out_monthly": 5500,
       "transport_monthly": 1000,
@@ -46,6 +51,11 @@
     },
     "comfortable_expat": {
       "description": "Brooklyn/LIC/UWS 1BR rental, dining out 3-4 nights/week, subway plus Ubers, 1-2 international trips plus Northeast weekends.",
+      "guide": {
+        "groceries": "A comfortable mix of Trader Joe's, Whole Foods top-ups, neighborhood produce, and better proteins for a kitchen that still feels New York-rich.",
+        "dining": "Dining out several nights a week plus the occasional nicer dinner, usually around $30-$65 casually and $130-$250 per person on a more serious night.",
+        "rhythm": "Mostly subway plus Uber, regular salon or fitness spend, and weekends aimed at upstate, the beach, or short Northeast escapes."
+      },
       "groceries_monthly": 1300,
       "dining_out_monthly": 1800,
       "transport_monthly": 400,
@@ -63,7 +73,12 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "UES classic 6 or brownstone, private school tuition (Dalton/Trinity/Spence-tier), part-time nanny, international and Hamptons/ski trips annually.",
+      "description": "UES classic 6 or brownstone, top private school access (Dalton/Trinity/Spence-tier) when dependents apply, part-time household help, international and Hamptons/ski trips annually.",
+      "guide": {
+        "groceries": "Large family grocery basket through Whole Foods, gourmet grocers, school-lunch provisioning, and premium pantry or entertaining extras.",
+        "dining": "Family brunches and dinners out most weekends plus adult meals, with casual family meals often $40-$80 per person and special dinners far above that.",
+        "rhythm": "Part-time household help, dense school and activity logistics, and a yearly rhythm split across city life, Hamptons or ski time, and long-haul family travel."
+      },
       "groceries_monthly": 2900,
       "dining_out_monthly": 3500,
       "transport_monthly": 1500,

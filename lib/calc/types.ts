@@ -8,8 +8,17 @@ export type HousingMode = "rent" | "own";
 
 export type WithdrawalStrategy = "proportional" | "tax_optimal";
 
+export type FederalFilingStatus = "single" | "married_filing_jointly";
+
+export interface TierLifestyleGuide {
+  groceries: string;
+  dining: string;
+  rhythm: string;
+}
+
 export interface TierCosts {
   description: string;
+  guide: TierLifestyleGuide;
   groceries_monthly: number;
   dining_out_monthly: number;
   transport_monthly: number;
@@ -65,6 +74,8 @@ export interface PortfolioComposition {
   costBasisPct: number;
 }
 
+export type TierCostOverrides = Partial<Omit<TierCosts, "description" | "guide">>;
+
 export interface CalcInputs {
   tier: TierKey;
   household: HouseholdProfile;
@@ -73,13 +84,15 @@ export interface CalcInputs {
   housingArea: "central" | "suburb";
   housingSize: "1br" | "3br";
   homeSqm: number;
-  categoryOverrides: Partial<TierCosts>;
+  categoryOverrides: TierCostOverrides;
   portfolio: PortfolioComposition;
+  filingStatus: FederalFilingStatus;
   usStateCode: string;
   swr: number;
   withdrawalStrategy: WithdrawalStrategy;
   retirementAge: number;
   lifeExpectancy: number;
+  stockAllocationPct?: number;
   realReturn?: number;
   inflation?: number;
   currentPortfolioUsd?: number;
@@ -100,5 +113,27 @@ export interface CalcResult {
   homeValueUsd: number;
   totalCapitalNeededUsd: number;
   yearsToFire: number | null;
-  warnings: string[];
+  warnings: CalcWarning[];
 }
+
+export type CalcWarning =
+  | {
+      key: "aggressive_swr";
+      swrPct: number;
+      horizonYears: number;
+    }
+  | {
+      key: "high_cost_basis";
+    }
+  | {
+      key: "domicile_required";
+      stateCode: string;
+    }
+  | {
+      key: "solver_not_converged";
+      residualUsd: number;
+      iterations: number;
+    }
+  | {
+      key: "local_taxes_omitted";
+    };

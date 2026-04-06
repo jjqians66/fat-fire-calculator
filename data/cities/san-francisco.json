@@ -28,6 +28,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "Pacific Heights/Russian Hill 2-3BR luxury apartment, Michelin dining monthly, weekly housekeeping, 3+ international trips plus Napa weekends.",
+      "guide": {
+        "groceries": "Whole Foods, Bi-Rite, specialty wine, butcher, and farmers' market shopping with premium produce, seafood, and easy entertaining at home.",
+        "dining": "Several good dinners out most weeks plus regular tasting-menu or Michelin nights, with bigger dinners often around $175-$350 per person before wine.",
+        "rhythm": "Ride-hail or car service when useful, weekly housekeeping, boutique fitness or wellness, and a social calendar that includes Napa, Sonoma, and long-haul travel."
+      },
       "groceries_monthly": 2200,
       "dining_out_monthly": 4500,
       "transport_monthly": 1100,
@@ -46,6 +51,11 @@
     },
     "comfortable_expat": {
       "description": "Mission/Hayes Valley/Noe Valley 1BR apartment, dining out 3 nights/week, Muni plus rideshares, 1-2 international trips plus wine country weekends.",
+      "guide": {
+        "groceries": "A mix of Trader Joe's, Whole Foods, Bi-Rite-style top-ups, and farmers' market produce with enough room for good proteins and pantry staples.",
+        "dining": "Dining out around 2-3 nights a week plus the occasional nicer dinner, often $30-$60 casually and $120-$220 per person when stepping up.",
+        "rhythm": "Mostly Muni, walking, and rideshares, regular personal care, and weekends that lean into wine country, coast, or cabin trips rather than full luxury logistics."
+      },
       "groceries_monthly": 1200,
       "dining_out_monthly": 1500,
       "transport_monthly": 450,
@@ -63,7 +73,12 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Noe Valley/Presidio Heights 4BR house, private school tuition (Town/Hamlin/SF Day), nanny or au pair, international plus ski trips annually.",
+      "description": "Noe Valley/Presidio Heights 4BR house, top private school access (Town/Hamlin/SF Day) when dependents apply, household help available, international plus ski trips annually.",
+      "guide": {
+        "groceries": "Big family grocery basket with premium produce, butcher or seafood counters, school lunches, pantry staples, and easy-hosting extras.",
+        "dining": "Family brunches and dinners out most weekends plus adult date nights, with casual family meals often $35-$70 per person and special dinners much higher.",
+        "rhythm": "Household help, dense school or activity logistics, and a calendar built around ski weeks, camps, and annual long-haul family travel."
+      },
       "groceries_monthly": 2700,
       "dining_out_monthly": 3000,
       "transport_monthly": 1600,

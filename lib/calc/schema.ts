@@ -3,8 +3,15 @@ import { z } from "zod";
 const nonNegative = z.number().nonnegative();
 const percent = z.number().min(0).max(1);
 
+export const TierLifestyleGuideSchema = z.object({
+  groceries: z.string().min(20),
+  dining: z.string().min(20),
+  rhythm: z.string().min(20),
+});
+
 export const TierCostsSchema = z.object({
   description: z.string().min(1),
+  guide: TierLifestyleGuideSchema,
   groceries_monthly: nonNegative,
   dining_out_monthly: nonNegative,
   transport_monthly: nonNegative,
@@ -66,18 +73,34 @@ export const TaxBracketSchema = z.object({
 
 export const FederalTaxDataSchema = z.object({
   year: z.number().int().positive(),
-  filingStatus: z.string().min(1),
-  longTermCapitalGains: z.object({
-    brackets: z.array(TaxBracketSchema).min(1),
+  filingStatuses: z.object({
+    single: z.object({
+      longTermCapitalGains: z.object({
+        brackets: z.array(TaxBracketSchema).min(1),
+      }),
+      niit: z.object({
+        threshold: nonNegative,
+        rate: percent,
+      }),
+      ordinaryIncome: z.object({
+        brackets: z.array(TaxBracketSchema).min(1),
+      }),
+      standardDeduction: nonNegative,
+    }),
+    married_filing_jointly: z.object({
+      longTermCapitalGains: z.object({
+        brackets: z.array(TaxBracketSchema).min(1),
+      }),
+      niit: z.object({
+        threshold: nonNegative,
+        rate: percent,
+      }),
+      ordinaryIncome: z.object({
+        brackets: z.array(TaxBracketSchema).min(1),
+      }),
+      standardDeduction: nonNegative,
+    }),
   }),
-  niit: z.object({
-    threshold: nonNegative,
-    rate: percent,
-  }),
-  ordinaryIncome: z.object({
-    brackets: z.array(TaxBracketSchema).min(1),
-  }),
-  standardDeduction: nonNegative,
   notes: z.string().optional(),
 });
 

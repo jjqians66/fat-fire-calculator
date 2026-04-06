@@ -29,6 +29,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "Coal Harbour/Yaletown penthouse or West Side house, weekly housekeeping, premium dining scene, 3+ international trips plus Whistler season pass.",
+      "guide": {
+        "groceries": "Whole Foods, gourmet grocers, fish counters, and farmers' market shopping with strong seafood, produce, wine, and entertaining at home.",
+        "dining": "Several polished meals out most weeks, plus destination dining or tasting menus, with bigger nights often around C$180-C$350 per person.",
+        "rhythm": "Ride-hail or car share when needed, housekeeping support, club or wellness spend, and a lifestyle that assumes regular Whistler and long-haul travel."
+      },
       "groceries_monthly": 2000,
       "dining_out_monthly": 3800,
       "transport_monthly": 1000,
@@ -47,6 +52,11 @@
     },
     "comfortable_expat": {
       "description": "Kitsilano/Mount Pleasant/Main St 1BR condo, dining out 2-3 nights/week, transit and car share, hiking/ski weekends plus 1-2 international trips.",
+      "guide": {
+        "groceries": "A comfortable mix of Save-On-Foods, Whole Foods top-ups, produce markets, and occasional specialty-store runs for cheese, wine, and proteins.",
+        "dining": "Dining out a few nights a week plus an occasional nicer dinner, often around C$30-C$60 casually and C$120-C$220 per person when stepping up.",
+        "rhythm": "Transit and car share, moderate personal-care spending, and weekends aimed at hiking, skiing, or nearby island and mountain escapes."
+      },
       "groceries_monthly": 1100,
       "dining_out_monthly": 1200,
       "transport_monthly": 400,
@@ -64,7 +74,12 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "West Side (Kerrisdale/Dunbar) 4BR house, private school tuition (St Georges/Crofton/York House), annual international plus weekly Whistler skiing in season.",
+      "description": "West Side (Kerrisdale/Dunbar) 4BR detached house, top-tier private school access (St Georges/Crofton/York House) when dependents apply, annual international plus weekly Whistler skiing in season.",
+      "guide": {
+        "groceries": "Big family grocery basket with premium fruit, seafood, school snacks, and Costco-style bulk runs layered on top of neighborhood premium grocers.",
+        "dining": "Family brunches and dinners out most weekends plus adult meals, with casual family meals often C$35-C$70 per person and special dinners meaningfully higher.",
+        "rhythm": "Household help when needed, private-school and activity logistics, and a schedule that assumes Whistler, camps, and annual long-haul family travel."
+      },
       "groceries_monthly": 2500,
       "dining_out_monthly": 2700,
       "transport_monthly": 1400,

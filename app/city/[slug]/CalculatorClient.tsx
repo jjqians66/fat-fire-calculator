@@ -1,17 +1,29 @@
 "use client";
 
+import assumptions from "@/data/assumptions.json";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { InputSection } from "@/components/inputs/InputSection";
 import { Select } from "@/components/inputs/Select";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import {
+  getLocalizedCityLifestyle,
+  getLocalizedTierNarrative,
+} from "@/lib/i18n/cityCopy";
 import { computeHousing } from "@/lib/calc/housing";
 import { applyHouseholdProfile } from "@/lib/calc/household";
 import { computeFireNumber } from "@/lib/calc/fireNumber";
+import { runMonteCarlo } from "@/lib/calc/monteCarlo";
 import { DEFAULT_INPUTS } from "@/lib/calc/defaults";
 import { fetchUsdRate } from "@/lib/fx/fetchRates";
 import { stateTax } from "@/lib/calc/taxData";
-import type { CalcInputs, CityData, TierCosts } from "@/lib/calc/types";
+import type {
+  CalcInputs,
+  CalcWarning,
+  CityData,
+  TierCosts,
+} from "@/lib/calc/types";
 
 const SpendChart = dynamic(
   () =>
@@ -20,12 +32,8 @@ const SpendChart = dynamic(
     ssr: false,
     loading: () => (
       <div className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
-        <h3 className="text-sm font-semibold text-neutral-950">
-          Annual spend by category
-        </h3>
-        <p className="mt-1 text-xs text-neutral-500">
-          Baseline preset vs your current overrides, converted to USD.
-        </p>
+        <div className="h-4 w-36 animate-pulse rounded-full bg-neutral-200" />
+        <div className="mt-2 h-3 w-56 animate-pulse rounded-full bg-neutral-100" />
         <div className="mt-4 h-[360px] animate-pulse rounded-[20px] bg-neutral-100" />
       </div>
     ),
@@ -41,72 +49,56 @@ const TaxBreakdownChart = dynamic(
     ssr: false,
     loading: () => (
       <div className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
-        <h3 className="text-sm font-semibold text-neutral-950">
-          Gross withdrawal composition
-        </h3>
-        <p className="mt-1 text-xs text-neutral-500">
-          See how much of the gross annual draw becomes spendable net cash.
-        </p>
+        <div className="h-4 w-36 animate-pulse rounded-full bg-neutral-200" />
+        <div className="mt-2 h-3 w-52 animate-pulse rounded-full bg-neutral-100" />
         <div className="mt-4 h-[220px] animate-pulse rounded-[20px] bg-neutral-100" />
       </div>
     ),
   }
 );
 
-const tierOptions = [
-  { value: "comfortable_expat", label: "Comfortable Expat" },
-  { value: "true_fat_fire", label: "True Fat FIRE" },
-  { value: "luxury_family", label: "Luxury Family" },
-] as const;
+const MonteCarloChart = dynamic(
+  () =>
+    import("@/components/results/MonteCarloChart").then(
+      (module) => module.MonteCarloChart
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="mt-4 h-[220px] animate-pulse rounded-[20px] bg-neutral-100" />
+    ),
+  }
+);
 
-const householdOptions = [
-  { value: "single", label: "Single" },
-  { value: "couple", label: "Couple (no kids)" },
-  { value: "family", label: "Family with kids" },
-] as const;
+const tierKeys = ["comfortable_expat", "true_fat_fire", "luxury_family"] as const;
+const householdKeys = ["single", "couple", "family"] as const;
+const housingModeKeys = ["rent", "own"] as const;
+const housingAreaKeys = ["central", "suburb"] as const;
+const housingSizeKeys = ["1br", "3br"] as const;
+const withdrawalKeys = ["proportional", "tax_optimal"] as const;
+const filingStatusKeys = ["single", "married_filing_jointly"] as const;
 
-const housingModeOptions = [
-  { value: "rent", label: "Rent" },
-  { value: "own", label: "Own" },
-] as const;
-
-const housingAreaOptions = [
-  { value: "central", label: "Central" },
-  { value: "suburb", label: "Suburb" },
-] as const;
-
-const housingSizeOptions = [
-  { value: "1br", label: "1 BR" },
-  { value: "3br", label: "3 BR" },
-] as const;
-
-const withdrawalStrategyOptions = [
-  { value: "proportional", label: "Proportional" },
-  { value: "tax_optimal", label: "Tax-optimal" },
-] as const;
-
-type EditableCategoryKey = Exclude<keyof TierCosts, "description">;
+type EditableCategoryKey = Exclude<keyof TierCosts, "description" | "guide">;
 
 const editableCategories: Array<{
   key: EditableCategoryKey;
-  label: string;
   step: number;
 }> = [
-  { key: "groceries_monthly", label: "Groceries / month", step: 100 },
-  { key: "dining_out_monthly", label: "Dining out / month", step: 100 },
-  { key: "transport_monthly", label: "Transport / month", step: 100 },
-  { key: "healthcare_monthly", label: "Healthcare / month", step: 100 },
-  { key: "utilities_monthly", label: "Utilities / month", step: 50 },
-  { key: "internet_mobile_monthly", label: "Internet + mobile / month", step: 50 },
-  { key: "entertainment_monthly", label: "Entertainment / month", step: 100 },
-  { key: "personal_services_monthly", label: "Personal services / month", step: 100 },
-  { key: "domestic_help_monthly", label: "Domestic help / month", step: 100 },
-  { key: "luxury_misc_monthly", label: "Luxury misc / month", step: 100 },
-  { key: "education_annual", label: "Education / year", step: 1000 },
-  { key: "travel_annual", label: "Travel / year", step: 1000 },
-  { key: "legal_tax_compliance_annual", label: "Legal / tax / year", step: 500 },
-  { key: "visa_residency_annual", label: "Visa / residency / year", step: 500 },
-  { key: "contingency_pct", label: "Contingency %", step: 0.01 },
+  { key: "groceries_monthly", step: 100 },
+  { key: "dining_out_monthly", step: 100 },
+  { key: "transport_monthly", step: 100 },
+  { key: "healthcare_monthly", step: 100 },
+  { key: "utilities_monthly", step: 50 },
+  { key: "internet_mobile_monthly", step: 50 },
+  { key: "entertainment_monthly", step: 100 },
+  { key: "personal_services_monthly", step: 100 },
+  { key: "domestic_help_monthly", step: 100 },
+  { key: "luxury_misc_monthly", step: 100 },
+  { key: "education_annual", step: 1000 },
+  { key: "travel_annual", step: 1000 },
+  { key: "legal_tax_compliance_annual", step: 500 },
+  { key: "visa_residency_annual", step: 500 },
+  { key: "contingency_pct", step: 0.01 },
 ];
 
 function mergeInputs(base: CalcInputs, parsed: Partial<CalcInputs>): CalcInputs {
@@ -153,6 +145,15 @@ function formatCurrency(
   }).format(value);
 }
 
+function formatSignedAmount(amount: number, currency: string, locale: string) {
+  const formatted = formatCurrency(Math.abs(amount), currency, locale);
+  return `${amount >= 0 ? "+" : "-"}${formatted}`;
+}
+
+function formatPercent(value: number, digits = 1) {
+  return `${(value * 100).toFixed(digits)}%`;
+}
+
 export function CalculatorClient({
   city,
   initialQueryState,
@@ -160,33 +161,27 @@ export function CalculatorClient({
   city: CityData;
   initialQueryState: string | null;
 }) {
+  const { t, locale } = useLocale();
+  const displayLocale = locale === "zh" ? "zh-CN" : "en-US";
+  const tierOptions = tierKeys.map((value) => ({ value, label: t.tiers[value] }));
+  const householdOptions = householdKeys.map((value) => ({ value, label: t.households[value] }));
+  const housingModeOptions = housingModeKeys.map((value) => ({ value, label: t.housingMode[value] }));
+  const housingAreaOptions = housingAreaKeys.map((value) => ({ value, label: t.housingArea[value] }));
+  const housingSizeOptions = housingSizeKeys.map((value) => ({ value, label: t.housingSize[value] }));
+  const withdrawalStrategyOptions = withdrawalKeys.map((value) => ({ value, label: t.withdrawal[value] }));
+  const filingStatusOptions = filingStatusKeys.map((value) => ({
+    value,
+    label: t.filingStatus[value],
+  }));
   const [inputs, setInputs] = useState<CalcInputs>(() => {
     const parsedQuery = decodeQueryState(initialQueryState);
-    if (typeof window === "undefined") {
-      return mergeInputs(DEFAULT_INPUTS, parsedQuery ?? {});
-    }
-    const localState = decodeQueryState(
-      window.localStorage.getItem(`fat-fire:${city.slug}`)
-    );
-    return mergeInputs(DEFAULT_INPUTS, parsedQuery ?? localState ?? {});
+    return mergeInputs(DEFAULT_INPUTS, parsedQuery ?? {});
   });
   const [fx, setFx] = useState(city.fx.referenceRateUsdPerLocal);
-  const [compareCities, setCompareCities] = useState<string[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
-    }
-
-    const compareList = window.localStorage.getItem("fat-fire:compare");
-    if (!compareList) {
-      return [];
-    }
-
-    try {
-      return JSON.parse(compareList) as string[];
-    } catch {
-      return [];
-    }
-  });
+  const [compareCities, setCompareCities] = useState<string[]>([]);
+  const [hasRestoredInputs, setHasRestoredInputs] = useState(
+    () => initialQueryState !== null
+  );
 
   useEffect(() => {
     let active = true;
@@ -201,20 +196,68 @@ export function CalculatorClient({
   }, [city.currency, city.fx.referenceRateUsdPerLocal]);
 
   useEffect(() => {
+    let cancelled = false;
+
+    queueMicrotask(() => {
+      if (cancelled) {
+        return;
+      }
+
+      const compareList = window.localStorage.getItem("fat-fire:compare");
+      if (compareList) {
+        try {
+          setCompareCities(JSON.parse(compareList) as string[]);
+        } catch {
+          setCompareCities([]);
+        }
+      } else {
+        setCompareCities([]);
+      }
+
+      if (initialQueryState !== null) {
+        setHasRestoredInputs(true);
+        return;
+      }
+
+      const localState = decodeQueryState(
+        window.localStorage.getItem(`fat-fire:${city.slug}`)
+      );
+      if (localState) {
+        setInputs(mergeInputs(DEFAULT_INPUTS, localState));
+      }
+      setHasRestoredInputs(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [city.slug, initialQueryState]);
+
+  useEffect(() => {
+    if (!hasRestoredInputs) {
+      return;
+    }
+
     const encoded = encodeQueryState(inputs);
     const url = new URL(window.location.href);
     url.searchParams.set("q", encoded);
     window.history.replaceState(null, "", url.toString());
     window.localStorage.setItem(`fat-fire:${city.slug}`, encoded);
-  }, [city.slug, inputs]);
+  }, [city.slug, hasRestoredInputs, inputs]);
 
   const compareSelection = Array.from(
     new Set([...compareCities, city.slug])
   ).slice(0, 4);
   const compareHref = `/compare?cities=${compareSelection.join(",")}`;
   const sourceTitle = city.sources.join(" · ");
+  const cityContext = getLocalizedCityLifestyle(city, locale);
+  const selectedTier = city.tiers[inputs.tier];
+  const selectedTierNarrative = getLocalizedTierNarrative(city, inputs.tier, locale);
+  const stockAllocationPct =
+    inputs.stockAllocationPct ?? assumptions.defaultStockAllocationPct;
+  const bondAllocationPct = 1 - stockAllocationPct;
   const baseTier = applyHouseholdProfile(
-    city.tiers[inputs.tier],
+    selectedTier,
     inputs.household,
     inputs.kidsCount
   );
@@ -229,6 +272,35 @@ export function CalculatorClient({
     homeSqm: inputs.homeSqm,
   });
   const result = computeFireNumber(city, inputs, fx);
+  const deferredAnnualSpendUsd = useDeferredValue(result.annualSpendUsd);
+  const deferredCurrentPortfolioUsd = useDeferredValue(inputs.currentPortfolioUsd ?? 0);
+  const deferredRetirementAge = useDeferredValue(inputs.retirementAge);
+  const deferredLifeExpectancy = useDeferredValue(inputs.lifeExpectancy);
+  const deferredStockAllocationPct = useDeferredValue(stockAllocationPct);
+  const deferredRealReturn = useDeferredValue(
+    inputs.realReturn ?? assumptions.defaultRealReturn
+  );
+  const monteCarloResult = useMemo(() => {
+    if (deferredCurrentPortfolioUsd <= 0) {
+      return null;
+    }
+
+    return runMonteCarlo({
+      annualSpendUsd: deferredAnnualSpendUsd,
+      currentPortfolioUsd: deferredCurrentPortfolioUsd,
+      retirementAge: deferredRetirementAge,
+      lifeExpectancy: deferredLifeExpectancy,
+      stockAllocationPct: deferredStockAllocationPct,
+      expectedRealReturn: deferredRealReturn,
+    });
+  }, [
+    deferredAnnualSpendUsd,
+    deferredCurrentPortfolioUsd,
+    deferredLifeExpectancy,
+    deferredRealReturn,
+    deferredRetirementAge,
+    deferredStockAllocationPct,
+  ]);
   const zeroBasis = computeFireNumber(
     city,
     {
@@ -262,7 +334,7 @@ export function CalculatorClient({
     if (value === baseline) {
       delete overrides[key];
     } else {
-      overrides[key] = value as never;
+      overrides[key] = value;
     }
     updateInputs({ ...inputs, categoryOverrides: overrides });
   }
@@ -277,23 +349,153 @@ export function CalculatorClient({
     value: code,
     label: entry.name,
   }));
+  const housingMonthlyLocal = housing.annualHousingLocal / 12;
+  const currentHousingSummary =
+    locale === "zh"
+      ? inputs.housingMode === "rent"
+        ? `${t.housingArea[inputs.housingArea]}${t.housingSize[inputs.housingSize]}${t.housingMode[inputs.housingMode]}，月租约 ${formatCurrency(
+            housingMonthlyLocal,
+            city.currency,
+            city.locale
+          )}。`
+        : `${t.housingArea[inputs.housingArea]}自有住房，面积约 ${inputs.homeSqm} 平方米，估值约 ${formatCurrency(
+            housing.homeValueLocal,
+            city.currency,
+            city.locale
+          )}，${t.calc.monthlyCarryCost}约 ${formatCurrency(
+            housingMonthlyLocal,
+            city.currency,
+            city.locale
+          )}。`
+      : inputs.housingMode === "rent"
+        ? `${t.housingArea[inputs.housingArea]} ${t.housingSize[inputs.housingSize]} ${t.housingMode[inputs.housingMode].toLowerCase()} at about ${formatCurrency(
+            housingMonthlyLocal,
+            city.currency,
+            city.locale
+          )} per month.`
+        : `${inputs.homeSqm} sqm ${t.housingArea[inputs.housingArea].toLowerCase()} home valued around ${formatCurrency(
+            housing.homeValueLocal,
+            city.currency,
+            city.locale
+          )}, with carrying costs near ${formatCurrency(
+            housingMonthlyLocal,
+            city.currency,
+            city.locale
+          )} per month.`;
+  const rhythmSummary =
+    locale === "zh"
+      ? `${t.calc.categoryLabels.transport}约 ${formatCurrency(
+          displayedTier.transport_monthly,
+          city.currency,
+          city.locale
+        )}/月，${t.calc.categoryLabels.personal_services}约 ${formatCurrency(
+          displayedTier.personal_services_monthly,
+          city.currency,
+          city.locale
+        )}/月，${t.calc.categoryLabels.domestic_help}约 ${formatCurrency(
+          displayedTier.domestic_help_monthly,
+          city.currency,
+          city.locale
+        )}/月，${t.calc.categoryLabels.entertainment}约 ${formatCurrency(
+          displayedTier.entertainment_monthly,
+          city.currency,
+          city.locale
+        )}/月。`
+      : `${t.calc.categoryLabels.transport} ${formatCurrency(
+          displayedTier.transport_monthly,
+          city.currency,
+          city.locale
+        )} / mo, ${t.calc.categoryLabels.personal_services.toLowerCase()} ${formatCurrency(
+          displayedTier.personal_services_monthly,
+          city.currency,
+          city.locale
+        )} / mo, ${t.calc.categoryLabels.domestic_help.toLowerCase()} ${formatCurrency(
+          displayedTier.domestic_help_monthly,
+          city.currency,
+          city.locale
+        )} / mo, ${t.calc.categoryLabels.entertainment.toLowerCase()} ${formatCurrency(
+          displayedTier.entertainment_monthly,
+          city.currency,
+          city.locale
+        )} / mo.`;
+  const perMonthLabel = locale === "zh" ? "/月" : "/ month";
+  const formatUsdNumber = (value: number) =>
+    value.toLocaleString(displayLocale, { maximumFractionDigits: 0 });
+  const formatUsdValue = (value: number) => `$${formatUsdNumber(value)}`;
+  const fxFallbackText = t.calc.fxFallback.replace("{date}", city.fx.asOf);
+  const formatWarning = (warning: CalcWarning) => {
+    switch (warning.key) {
+      case "aggressive_swr":
+        return t.calc.warnings.aggressiveSwr
+          .replace("{swr}", warning.swrPct.toFixed(1))
+          .replace("{horizon}", String(warning.horizonYears));
+      case "high_cost_basis":
+        return t.calc.warnings.highCostBasis;
+      case "domicile_required":
+        return t.calc.warnings.domicileRequired.replace(
+          "{state}",
+          warning.stateCode
+        );
+      case "solver_not_converged":
+        return t.calc.warnings.solverNotConverged
+          .replace("{iterations}", String(warning.iterations))
+          .replace(
+            "{residual}",
+            Math.round(warning.residualUsd).toLocaleString(displayLocale)
+          );
+      case "local_taxes_omitted":
+        return t.calc.warnings.localTaxesOmitted;
+      default:
+        return "";
+    }
+  };
+  const overrideSummaries = editableCategories
+    .flatMap((field) => {
+      const override = inputs.categoryOverrides[field.key];
+      if (override === undefined) {
+        return [];
+      }
+
+      const baseline = Number(baseTier[field.key]);
+      const current = Number(override);
+      const delta = current - baseline;
+      if (delta === 0) {
+        return [];
+      }
+
+      const valueLabel =
+        field.key === "contingency_pct"
+          ? `${delta >= 0 ? "+" : ""}${(delta * 100).toFixed(1)}${
+              locale === "zh" ? " 个百分点" : " pts"
+            }`
+          : formatSignedAmount(delta, city.currency, city.locale);
+
+      return [
+        {
+          key: field.key,
+          label: t.calc.expenseFields[field.key],
+          valueLabel,
+        },
+      ];
+    })
+    .slice(0, 5);
 
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.18em] text-neutral-500">
-            City calculator
+            {t.calc.kicker}
           </p>
           <h1 className="mt-2 text-4xl font-semibold tracking-tight text-neutral-950">
             {city.name}
           </h1>
           <p className="mt-2 text-sm text-neutral-600">
-            {city.country} · {city.currency} · Updated {city.lastUpdated}
+            {city.country} · {city.currency} · {t.calc.updated} {city.lastUpdated}
           </p>
-          {city.lifestyle ? (
+          {cityContext ? (
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-700">
-              {city.lifestyle}
+              {cityContext}
             </p>
           ) : null}
         </div>
@@ -303,13 +505,13 @@ export function CalculatorClient({
             onClick={addToComparison}
             className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-neutral-900 transition hover:border-black/20"
           >
-            Add to comparison
+            {t.calc.addToCompare}
           </button>
           <Link
             href={compareHref}
             className="rounded-full bg-neutral-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800"
           >
-            Open comparison
+            {t.calc.openCompare}
           </Link>
         </div>
       </header>
@@ -317,19 +519,26 @@ export function CalculatorClient({
       <div className="grid gap-6 lg:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)_minmax(19rem,23rem)]">
         <div className="min-w-0 space-y-4">
           <InputSection
-            title="Household"
-            description="Retirement horizon and family profile change spending pressure and warning thresholds."
+            title={t.calc.household}
+            description={t.calc.householdDesc}
           >
             <Select
-              label="Profile"
+              label={t.calc.profile}
               value={inputs.household}
               options={householdOptions}
-              onChange={(value) => updateInputs({ ...inputs, household: value })}
+              onChange={(value) =>
+                updateInputs({
+                  ...inputs,
+                  household: value,
+                  filingStatus:
+                    value === "single" ? "single" : inputs.filingStatus,
+                })
+              }
             />
             {inputs.household === "family" ? (
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Number of kids
+                  {t.calc.numKids}
                 </span>
                 <input
                   aria-label="Number of kids"
@@ -350,7 +559,7 @@ export function CalculatorClient({
             <div className="grid grid-cols-2 gap-3">
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Retirement age
+                  {t.calc.retirementAge}
                 </span>
                 <input
                   aria-label="Retirement age"
@@ -369,7 +578,7 @@ export function CalculatorClient({
               </label>
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Life expectancy
+                  {t.calc.lifeExpectancy}
                 </span>
                 <input
                   aria-label="Life expectancy"
@@ -389,11 +598,8 @@ export function CalculatorClient({
             </div>
           </InputSection>
 
-          <InputSection title="Lifestyle tier">
-            <p className="mb-3 text-xs text-neutral-500">
-              Pick a lifestyle baseline tailored to {city.name}. Individual
-              categories remain editable below.
-            </p>
+          <InputSection title={t.calc.lifestyleTier}>
+            <p className="mb-3 text-xs text-neutral-500">{t.calc.tierHelp}</p>
             <div className="space-y-2">
               {tierOptions.map((opt) => {
                 const selected = opt.value === inputs.tier;
@@ -401,6 +607,8 @@ export function CalculatorClient({
                   <button
                     key={opt.value}
                     type="button"
+                    data-testid={`tier-option-${opt.value}`}
+                    aria-pressed={selected}
                     onClick={() =>
                       updateInputs({ ...inputs, tier: opt.value })
                     }
@@ -420,12 +628,12 @@ export function CalculatorClient({
                       </span>
                       {selected ? (
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--accent)]">
-                          Selected
+                          {t.calc.selected}
                         </span>
                       ) : null}
                     </div>
                     <p className="mt-1.5 text-xs leading-relaxed text-neutral-600">
-                      {city.tiers[opt.value].description}
+                      {getLocalizedTierNarrative(city, opt.value, locale).description}
                     </p>
                   </button>
                 );
@@ -433,22 +641,22 @@ export function CalculatorClient({
             </div>
           </InputSection>
 
-          <InputSection title="Housing">
+          <InputSection title={t.calc.housing}>
             <Select
-              label="Mode"
+              label={t.calc.mode}
               value={inputs.housingMode}
               options={housingModeOptions}
               onChange={(value) => updateInputs({ ...inputs, housingMode: value })}
             />
             <div className="grid grid-cols-2 gap-3">
               <Select
-                label="Area"
+                label={t.calc.area}
                 value={inputs.housingArea}
                 options={housingAreaOptions}
                 onChange={(value) => updateInputs({ ...inputs, housingArea: value })}
               />
               <Select
-                label="Size"
+                label={t.calc.size}
                 value={inputs.housingSize}
                 options={housingSizeOptions}
                 onChange={(value) => updateInputs({ ...inputs, housingSize: value })}
@@ -457,7 +665,7 @@ export function CalculatorClient({
             {inputs.housingMode === "own" ? (
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Home size (sqm)
+                  {t.calc.homeSqm}
                 </span>
                 <input
                   aria-label="Home size (sqm)"
@@ -478,21 +686,22 @@ export function CalculatorClient({
           </InputSection>
 
           <InputSection
-            title="Expense overrides"
-            description="Values are entered in the city's local currency. Leave a field at the baseline preset to avoid storing an override."
+            title={t.calc.expenseOverrides}
+            description={t.calc.expenseOverridesDesc}
           >
             <div className="grid gap-3">
               {editableCategories.map((field) => {
                 const rawValue =
                   inputs.categoryOverrides[field.key] ?? displayedTier[field.key];
                 const isPercent = field.key === "contingency_pct";
+                const fieldLabel = t.calc.expenseFields[field.key];
                 return (
                   <label key={field.key} className="block space-y-1.5">
                     <span className="text-sm font-medium text-neutral-700">
-                      {field.label}
+                      {fieldLabel}
                     </span>
                     <input
-                      aria-label={field.label}
+                      aria-label={fieldLabel}
                       type="number"
                       step={field.step}
                       min={0}
@@ -504,7 +713,7 @@ export function CalculatorClient({
                       className="w-full rounded-2xl border border-black/10 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none transition focus:border-[var(--accent)]"
                     />
                     <p className="text-xs text-neutral-500" title={sourceTitle}>
-                      Baseline:{" "}
+                      {t.calc.baseline}:{" "}
                       {isPercent
                         ? `${(Number(baseTier[field.key]) * 100).toFixed(0)}%`
                         : formatCurrency(
@@ -520,9 +729,9 @@ export function CalculatorClient({
             </div>
           </InputSection>
 
-          <InputSection title="Portfolio composition">
+          <InputSection title={t.calc.portfolio}>
             <Select
-              label="Withdrawal sequencing"
+              label={t.calc.withdrawalSeq}
               value={inputs.withdrawalStrategy}
               options={withdrawalStrategyOptions}
               onChange={(value) =>
@@ -531,7 +740,7 @@ export function CalculatorClient({
             />
             <label className="block space-y-1.5">
               <span className="text-sm font-medium text-neutral-700">
-                Taxable: {(inputs.portfolio.taxablePct * 100).toFixed(0)}%
+                {t.calc.taxable}: {(inputs.portfolio.taxablePct * 100).toFixed(0)}%
               </span>
               <input
                 aria-label="Taxable portfolio share"
@@ -564,7 +773,7 @@ export function CalculatorClient({
             </label>
             <label className="block space-y-1.5">
               <span className="text-sm font-medium text-neutral-700">
-                Traditional: {(inputs.portfolio.traditionalPct * 100).toFixed(0)}%
+                {t.calc.traditional}: {(inputs.portfolio.traditionalPct * 100).toFixed(0)}%
               </span>
               <input
                 aria-label="Traditional portfolio share"
@@ -588,11 +797,11 @@ export function CalculatorClient({
               />
             </label>
             <p className="text-xs text-neutral-500">
-              Roth: {(inputs.portfolio.rothPct * 100).toFixed(0)}%
+              {t.calc.roth}: {(inputs.portfolio.rothPct * 100).toFixed(0)}%
             </p>
             <label className="block space-y-1.5">
               <span className="text-sm font-medium text-neutral-700">
-                Cost basis of taxable: {(inputs.portfolio.costBasisPct * 100).toFixed(0)}%
+                {t.calc.costBasis}: {(inputs.portfolio.costBasisPct * 100).toFixed(0)}%
               </span>
               <input
                 aria-label="Cost basis of taxable"
@@ -615,9 +824,15 @@ export function CalculatorClient({
             </label>
           </InputSection>
 
-          <InputSection title="Tax assumptions">
+          <InputSection title={t.calc.taxAssumptions}>
             <Select
-              label="US retirement state"
+              label={t.calc.filingStatus}
+              value={inputs.filingStatus}
+              options={filingStatusOptions}
+              onChange={(value) => updateInputs({ ...inputs, filingStatus: value })}
+            />
+            <Select
+              label={t.calc.usState}
               value={inputs.usStateCode}
               options={stateOptions}
               onChange={(value) => updateInputs({ ...inputs, usStateCode: value })}
@@ -625,12 +840,12 @@ export function CalculatorClient({
           </InputSection>
 
           <InputSection
-            title="Returns and runway"
-            description="Current portfolio and annual savings are optional. If both are set, the calculator estimates a simple real-return path to the target."
+            title={t.calc.returnsRunway}
+            description={t.calc.returnsRunwayDesc}
           >
             <label className="block space-y-1.5">
               <span className="text-sm font-medium text-neutral-700">
-                Safe withdrawal rate: {(inputs.swr * 100).toFixed(2)}%
+                {t.calc.swr}: {(inputs.swr * 100).toFixed(2)}%
               </span>
               <input
                 aria-label="Safe withdrawal rate"
@@ -648,7 +863,7 @@ export function CalculatorClient({
             <div className="grid grid-cols-2 gap-3">
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Real return
+                  {t.calc.realReturn}
                 </span>
                 <input
                   aria-label="Real return"
@@ -668,7 +883,7 @@ export function CalculatorClient({
               </label>
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Inflation
+                  {t.calc.inflation}
                 </span>
                 <input
                   aria-label="Inflation"
@@ -687,10 +902,31 @@ export function CalculatorClient({
                 />
               </label>
             </div>
+            <label className="block space-y-1.5">
+              <span className="text-sm font-medium text-neutral-700">
+                {t.calc.stockAllocation}: {formatPercent(stockAllocationPct, 0)} ·{" "}
+                {t.calc.bondAllocation}: {formatPercent(bondAllocationPct, 0)}
+              </span>
+              <input
+                aria-label={t.calc.stockAllocation}
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={stockAllocationPct}
+                onChange={(event) =>
+                  updateInputs({
+                    ...inputs,
+                    stockAllocationPct: Number(event.target.value),
+                  })
+                }
+                className="w-full"
+              />
+            </label>
             <div className="grid grid-cols-2 gap-3">
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Current portfolio (USD)
+                  {t.calc.currentPortfolio}
                 </span>
                 <input
                   aria-label="Current portfolio (USD)"
@@ -709,7 +945,7 @@ export function CalculatorClient({
               </label>
               <label className="block space-y-1.5">
                 <span className="text-sm font-medium text-neutral-700">
-                  Annual savings (USD)
+                  {t.calc.annualSavings}
                 </span>
                 <input
                   aria-label="Annual savings (USD)"
@@ -749,85 +985,140 @@ export function CalculatorClient({
           />
           <details className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
             <summary className="flex items-center justify-between text-sm font-semibold text-neutral-950">
-              Why this number?
-              <span className="text-neutral-500">Expand</span>
+              {t.calc.whyThisNumber}
+              <span className="text-neutral-500">{t.calc.expand}</span>
             </summary>
             <div className="mt-4 space-y-3 text-sm leading-7 text-neutral-700">
-              <p>
-                Annual spend is calculated from your current city preset, household profile, housing mode, and category overrides. That net spend is then grossed up for tax drag before dividing by your SWR.
+              <p>{t.calc.explanationIntro}</p>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-2xl bg-neutral-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                    {t.calc.cityContext}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-neutral-700">
+                    {cityContext}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-neutral-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                    {t.calc.homeBase}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-neutral-700">
+                    {selectedTierNarrative.description}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-neutral-700" title={sourceTitle}>
+                    <span className="font-medium text-neutral-800">
+                      {t.calc.currentHousing}:{" "}
+                    </span>
+                    {currentHousingSummary}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-neutral-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                    {t.calc.groceriesGuide}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-neutral-700">
+                    {selectedTierNarrative.guide.groceries}
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-neutral-500" title={sourceTitle}>
+                    {t.calc.groceryBudget}:{" "}
+                    {formatCurrency(
+                      displayedTier.groceries_monthly,
+                      city.currency,
+                      city.locale
+                    )}{" "}
+                    {perMonthLabel}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-neutral-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                    {t.calc.diningGuide}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-neutral-700">
+                    {selectedTierNarrative.guide.dining}
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-neutral-500" title={sourceTitle}>
+                    {t.calc.diningBudget}:{" "}
+                    {formatCurrency(
+                      displayedTier.dining_out_monthly,
+                      city.currency,
+                      city.locale
+                    )}{" "}
+                    {perMonthLabel}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-neutral-50 p-4 md:col-span-2">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                    {t.calc.rhythmGuide}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-neutral-700">
+                    {selectedTierNarrative.guide.rhythm}
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-neutral-500" title={sourceTitle}>
+                    {rhythmSummary}
+                  </p>
+                </div>
+              </div>
+              {overrideSummaries.length > 0 ? (
+                <div className="rounded-2xl border border-black/8 bg-white px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                    {t.calc.overridesTitle}
+                  </p>
+                  <ul className="mt-2 space-y-1 text-sm leading-6 text-neutral-700">
+                    {overrideSummaries.map((entry) => (
+                      <li key={entry.key}>
+                        {entry.label}: {entry.valueLabel}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              <p className="pt-2 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                {t.calc.calculationChain}
               </p>
               <dl className="grid gap-2">
                 <div className="flex justify-between gap-4">
-                  <dt>Annual spend (USD)</dt>
-                  <dd title={sourceTitle}>
-                    $
-                    {result.annualSpendUsd.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                    })}
-                  </dd>
+                  <dt>{t.calc.annualSpendUsd}</dt>
+                  <dd title={sourceTitle}>{formatUsdValue(result.annualSpendUsd)}</dd>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <dt>Gross withdrawal</dt>
-                  <dd title={sourceTitle}>
-                    $
-                    {result.grossWithdrawalUsd.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                    })}
-                  </dd>
+                  <dt>{t.calc.grossWithdrawal}</dt>
+                  <dd title={sourceTitle}>{formatUsdValue(result.grossWithdrawalUsd)}</dd>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <dt>Total tax</dt>
-                  <dd title={sourceTitle}>
-                    $
-                    {result.taxBreakdown.totalTax.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                    })}
-                  </dd>
+                  <dt>{t.calc.totalTax}</dt>
+                  <dd title={sourceTitle}>{formatUsdValue(result.taxBreakdown.totalTax)}</dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt>SWR</dt>
                   <dd title={sourceTitle}>{(inputs.swr * 100).toFixed(2)}%</dd>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <dt>Required portfolio</dt>
-                  <dd title={sourceTitle}>
-                    $
-                    {result.fireNumberUsd.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                    })}
-                  </dd>
+                  <dt>{t.calc.requiredPortfolio}</dt>
+                  <dd title={sourceTitle}>{formatUsdValue(result.fireNumberUsd)}</dd>
                 </div>
               </dl>
               <div className="rounded-2xl bg-neutral-50 p-4 text-xs text-neutral-600">
-                <p className="font-semibold text-neutral-800">Cost basis sensitivity</p>
+                <p className="font-semibold text-neutral-800">{t.calc.costBasisSensitivity}</p>
                 <p className="mt-2">
-                  0% basis: $
-                  {zeroBasis.fireNumberUsd.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
+                  {t.calc.zeroBasis}: {formatUsdValue(zeroBasis.fireNumberUsd)}
                 </p>
                 <p>
-                  Current basis: $
-                  {result.fireNumberUsd.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
+                  {t.calc.currentBasis}: {formatUsdValue(result.fireNumberUsd)}
                 </p>
                 <p>
-                  100% basis: $
-                  {fullBasis.fireNumberUsd.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
+                  {t.calc.fullBasis}: {formatUsdValue(fullBasis.fireNumberUsd)}
                 </p>
               </div>
             </div>
           </details>
           <div className="rounded-[24px] border border-black/10 bg-white/85 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.4)]">
-            <h3 className="text-sm font-semibold text-neutral-950">Data provenance</h3>
+            <h3 className="text-sm font-semibold text-neutral-950">{t.calc.dataProvenance}</h3>
             <p className="mt-1 text-xs leading-6 text-neutral-600">
               {city.sources.join(" · ")}
             </p>
             <p className="mt-3 text-xs leading-6 text-neutral-500">
-              Snapshot FX fallback from {city.fx.asOf}. Live FX uses a free reference feed when available.
+              {fxFallbackText}
             </p>
           </div>
         </div>
@@ -835,17 +1126,14 @@ export function CalculatorClient({
         <aside className="space-y-4 lg:sticky lg:top-4 lg:self-start">
           <div className="rounded-[28px] border border-black/10 bg-white/90 p-6 shadow-[0_22px_70px_-42px_rgba(15,23,42,0.52)] backdrop-blur">
             <p className="text-xs uppercase tracking-[0.18em] text-neutral-500">
-              Fat FIRE target
+              {t.calc.fireTarget}
             </p>
             <div
               data-testid="fire-target-value"
               className="mt-3 text-4xl font-semibold tracking-tight text-neutral-950"
               title={sourceTitle}
             >
-              $
-              {result.fireNumberUsd.toLocaleString("en-US", {
-                maximumFractionDigits: 0,
-              })}
+              {formatUsdValue(result.fireNumberUsd)}
             </div>
             <p className="mt-2 text-sm text-neutral-500" title={sourceTitle}>
               {formatCurrency(result.fireNumberUsd / fx, city.currency, city.locale)}
@@ -855,78 +1143,136 @@ export function CalculatorClient({
                 data-testid="home-addback"
                 className="mt-4 rounded-2xl bg-neutral-50 px-4 py-3 text-sm text-neutral-700"
               >
-                Home value add-back:{" "}
-                <strong>
-                  $
-                  {result.homeValueUsd.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-                </strong>
-                . Total capital needed:{" "}
-                <strong>
-                  $
-                  {result.totalCapitalNeededUsd.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-                </strong>
-                .
+                {t.calc.homeValueAddBack}: <strong>{formatUsdValue(result.homeValueUsd)}</strong>
+                {locale === "zh" ? "。 " : ". "}
+                {t.calc.totalCapitalNeeded}:{" "}
+                <strong>{formatUsdValue(result.totalCapitalNeededUsd)}</strong>
+                {locale === "zh" ? "。" : "."}
               </p>
             ) : null}
             <dl className="mt-6 space-y-2 text-sm">
               <div className="flex justify-between gap-4">
-                <dt className="text-neutral-500">Annual spend</dt>
-                <dd title={sourceTitle}>
-                  $
-                  {result.annualSpendUsd.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-                </dd>
+                <dt className="text-neutral-500">{t.calc.monthlySpend}</dt>
+                <dd title={sourceTitle}>{formatUsdValue(result.annualSpendUsd / 12)}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-neutral-500">Gross withdrawal</dt>
-                <dd title={sourceTitle}>
-                  $
-                  {result.grossWithdrawalUsd.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-                </dd>
+                <dt className="text-neutral-500">{t.calc.grossWithdrawalMo}</dt>
+                <dd title={sourceTitle}>{formatUsdValue(result.grossWithdrawalUsd / 12)}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-neutral-500">Total tax</dt>
-                <dd title={sourceTitle}>
-                  $
-                  {result.taxBreakdown.totalTax.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-                </dd>
+                <dt className="text-neutral-500">{t.calc.taxMo}</dt>
+                <dd title={sourceTitle}>{formatUsdValue(result.taxBreakdown.totalTax / 12)}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-neutral-500">Net spend</dt>
+                <dt className="text-neutral-500">{t.calc.netSpendMo}</dt>
                 <dd title={sourceTitle}>
-                  $
-                  {(result.grossWithdrawalUsd - result.taxBreakdown.totalTax).toLocaleString(
-                    "en-US",
-                    {
-                      maximumFractionDigits: 0,
-                    }
+                  {formatUsdValue(
+                    (result.grossWithdrawalUsd - result.taxBreakdown.totalTax) / 12
                   )}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-neutral-500">Years to FIRE</dt>
+                <dt className="text-neutral-500">{t.calc.yearsToFire}</dt>
                 <dd data-testid="years-to-fire" title={sourceTitle}>
-                  {result.yearsToFire ? `${result.yearsToFire} years` : "Add portfolio + savings"}
+                  {result.yearsToFire
+                    ? `${result.yearsToFire} ${t.calc.yearsSuffix}`
+                    : t.calc.addPortfolioSavings}
                 </dd>
               </div>
             </dl>
             {result.warnings.length > 0 ? (
               <div className="mt-5 space-y-2 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950">
                 {result.warnings.map((warning, index) => (
-                  <p key={index}>{warning}</p>
+                  <p key={index}>{formatWarning(warning)}</p>
                 ))}
               </div>
             ) : null}
           </div>
+          <details className="rounded-[28px] border border-black/10 bg-white/90 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.32)]">
+            <summary className="flex items-center justify-between text-sm font-semibold text-neutral-950">
+              {t.calc.stressTest}
+              <span className="text-neutral-500">{t.calc.stressTestExpand}</span>
+            </summary>
+            <div className="mt-4 space-y-4">
+              <p className="text-sm leading-6 text-neutral-700">
+                {t.calc.stressTestDesc}
+              </p>
+              {monteCarloResult ? (
+                <>
+                  <div className="rounded-2xl bg-neutral-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                      {t.calc.portfolioLastsToAge.replace(
+                        "{age}",
+                        String(inputs.lifeExpectancy)
+                      )}
+                    </p>
+                    <p
+                      data-testid="stress-test-success-rate"
+                      className="mt-2 text-3xl font-semibold tracking-tight text-neutral-950"
+                    >
+                      {formatPercent(monteCarloResult.successRate)}
+                    </p>
+                    <p className="mt-2 text-xs leading-5 text-neutral-500">
+                      {t.calc.deterministicBaseline}: {formatUsdValue(result.fireNumberUsd)}
+                      {" · "}
+                      {t.calc.simulatedStressTest}:{" "}
+                      {formatUsdValue(inputs.currentPortfolioUsd ?? 0)}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 text-sm">
+                    <div className="rounded-2xl bg-neutral-50 p-3">
+                      <p className="text-xs text-neutral-500">{t.calc.successProbability}</p>
+                      <p className="mt-1 font-semibold text-neutral-900">
+                        {formatPercent(monteCarloResult.successRate)}
+                      </p>
+                    </div>
+                    <div className="rounded-2xl bg-neutral-50 p-3">
+                      <p className="text-xs text-neutral-500">{t.calc.simulationTrials}</p>
+                      <p className="mt-1 font-semibold text-neutral-900">
+                        {monteCarloResult.trials.toLocaleString(displayLocale)}
+                      </p>
+                    </div>
+                    <div className="rounded-2xl bg-neutral-50 p-3">
+                      <p className="text-xs text-neutral-500">{t.calc.percentilePath}</p>
+                      <p className="mt-1 font-semibold text-neutral-900">
+                        {formatUsdValue(
+                          monteCarloResult.percentile10EndingPortfolioUsd
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-black/8 bg-white p-4">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-neutral-500">
+                      <span>
+                        {t.calc.stockAllocation}: {formatPercent(stockAllocationPct, 0)}
+                      </span>
+                      <span>
+                        {t.calc.bondAllocation}: {formatPercent(bondAllocationPct, 0)}
+                      </span>
+                      <span>
+                        {t.calc.realReturn}: {formatPercent(
+                          inputs.realReturn ?? assumptions.defaultRealReturn,
+                          1
+                        )}
+                      </span>
+                      <span>
+                        {t.calc.inflation}: {formatPercent(inputs.inflation ?? 0.025, 1)}
+                      </span>
+                      <span>
+                        {locale === "zh" ? "年波动率" : "Annual volatility"}:{" "}
+                        {formatPercent(monteCarloResult.annualVolatility, 1)}
+                      </span>
+                    </div>
+                    <MonteCarloChart data={monteCarloResult.percentile10Trajectory} />
+                  </div>
+                </>
+              ) : (
+                <div className="rounded-2xl bg-neutral-50 p-4 text-sm leading-6 text-neutral-600">
+                  {t.calc.addPortfolioForStressTest}
+                </div>
+              )}
+            </div>
+          </details>
         </aside>
       </div>
     </div>

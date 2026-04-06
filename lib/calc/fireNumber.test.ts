@@ -5,6 +5,11 @@ import type { CalcInputs, CityData } from "./types";
 function tierStub(monthlyEach: number, educationAnnual: number) {
   return {
     description: "s",
+    guide: {
+      groceries: "Premium groceries with imported staples.",
+      dining: "Dining out a few times a week with the occasional splurge.",
+      rhythm: "Regular transport, services, and entertainment spending.",
+    },
     groceries_monthly: monthlyEach,
     dining_out_monthly: monthlyEach,
     transport_monthly: monthlyEach,
@@ -64,6 +69,7 @@ const baseInputs: CalcInputs = {
     rothPct: 0.1,
     costBasisPct: 0.65,
   },
+  filingStatus: "married_filing_jointly",
   usStateCode: "NONE",
   swr: 0.0325,
   withdrawalStrategy: "proportional",
@@ -113,5 +119,15 @@ describe("computeFireNumber", () => {
       0.0067
     );
     expect(california.fireNumberUsd).toBeGreaterThan(noState.fireNumberUsd);
+  });
+
+  it("drops for MFJ versus single on the same couple household", () => {
+    const single = computeFireNumber(
+      city,
+      { ...baseInputs, filingStatus: "single" },
+      0.0067
+    );
+    const married = computeFireNumber(city, baseInputs, 0.0067);
+    expect(married.fireNumberUsd).toBeLessThan(single.fireNumberUsd);
   });
 });

@@ -1,7 +1,13 @@
 import { applyHouseholdProfile } from "./household";
 import { computeHousing } from "./housing";
 import { computeAnnualSpend } from "./spend";
-import type { CalcInputs, CalcResult, CityData, TierCosts } from "./types";
+import type {
+  CalcInputs,
+  CalcResult,
+  CalcWarning,
+  CityData,
+  TierCosts,
+} from "./types";
 import { solveGrossWithdrawal } from "./withdrawal";
 
 function mergeOverrides(
@@ -40,7 +46,7 @@ export function computeFireNumber(
   inputs: CalcInputs,
   fxUsdPerLocal: number
 ): CalcResult {
-  const warnings: string[] = [];
+  const warnings: CalcWarning[] = [];
   const tierBase = city.tiers[inputs.tier];
   const adjustedTier = applyHouseholdProfile(
     tierBase,
@@ -65,9 +71,18 @@ export function computeFireNumber(
     traditionalPct: inputs.portfolio.traditionalPct,
     rothPct: inputs.portfolio.rothPct,
     costBasisPct: inputs.portfolio.costBasisPct,
+    filingStatus: inputs.filingStatus,
     stateCode: inputs.usStateCode,
     strategy: inputs.withdrawalStrategy,
+    swr: inputs.swr,
   });
+  if (!withdrawal.converged) {
+    warnings.push({
+      key: "solver_not_converged",
+      residualUsd: Math.abs(withdrawal.residual),
+      iterations: withdrawal.iterations,
+    });
+  }
 
   const fireNumberUsd = withdrawal.gross / inputs.swr;
   const homeValueUsd = housing.homeValueLocal * fxUsdPerLocal;
@@ -75,23 +90,22 @@ export function computeFireNumber(
 
   const horizon = inputs.lifeExpectancy - inputs.retirementAge;
   if (inputs.swr >= 0.04 && horizon >= 40) {
-    warnings.push(
-      `SWR of ${(inputs.swr * 100).toFixed(1)}% over ${horizon}yr horizon is aggressive; consider 3.25–3.5%.`
-    );
+    warnings.push({
+      key: "aggressive_swr",
+      swrPct: inputs.swr * 100,
+      horizonYears: horizon,
+    });
   }
   if (inputs.portfolio.costBasisPct >= 0.95) {
-    warnings.push(
-      "Very high cost basis assumption; realized gains could be larger in practice."
-    );
+    warnings.push({ key: "high_cost_basis" });
   }
   if (inputs.usStateCode === "CA" || inputs.usStateCode === "NY") {
-    warnings.push(
-      `${inputs.usStateCode} residency assumptions depend on actually changing domicile before retirement.`
-    );
+    warnings.push({
+      key: "domicile_required",
+      stateCode: inputs.usStateCode,
+    });
   }
-  warnings.push(
-    "Local city taxes on investment withdrawals are not added; foreign tax credits and treaty treatment vary."
-  );
+  warnings.push({ key: "local_taxes_omitted" });
 
   const yearsToFire = computeYearsToFire(
     totalCapitalNeededUsd,

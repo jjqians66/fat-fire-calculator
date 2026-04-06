@@ -12,7 +12,11 @@ test("Tokyo calculator updates on tier change", async ({ page }) => {
   const initial = await page.getByTestId("fire-target-value").textContent();
   expect(initial).toMatch(/\$\d/);
 
-  await page.getByLabel("Tier").selectOption("true_fat_fire");
+  await page.getByTestId("tier-option-true_fat_fire").click();
+  await expect(page.getByTestId("tier-option-true_fat_fire")).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
   const updated = await page.getByTestId("fire-target-value").textContent();
   expect(updated).not.toBe(initial);
 });
@@ -25,14 +29,17 @@ test("rent to own shows the home add-back line", async ({ page }) => {
 
 test("URL query param restores state", async ({ page }) => {
   await page.goto("/city/tokyo");
-  await page.getByLabel("Tier").selectOption("true_fat_fire");
+  await page.getByTestId("tier-option-true_fat_fire").click();
   await page.getByLabel("US retirement state").selectOption("CA");
 
   const url = page.url();
   expect(url).toContain("q=");
 
   await page.goto(url);
-  await expect(page.getByLabel("Tier")).toHaveValue("true_fat_fire");
+  await expect(page.getByTestId("tier-option-true_fat_fire")).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
   await expect(page.getByLabel("US retirement state")).toHaveValue("CA");
 });
 

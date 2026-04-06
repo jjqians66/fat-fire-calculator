@@ -32,6 +32,35 @@ function writeStorageCache(value: { rates: Record<string, number>; fetchedAt: nu
   window.localStorage.setItem(storageKey, JSON.stringify(value));
 }
 
+async function fetchPrimaryRates() {
+  const response = await fetch("https://open.er-api.com/v6/latest/USD");
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = (await response.json()) as {
+    result?: string;
+    rates?: Record<string, number>;
+  };
+  if (!data.rates || (data.result && data.result !== "success")) {
+    return null;
+  }
+
+  return data.rates;
+}
+
+async function fetchSecondaryRates() {
+  const response = await fetch("https://api.frankfurter.app/latest?from=USD");
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = (await response.json()) as {
+    rates?: Record<string, number>;
+  };
+  return data.rates ?? null;
+}
+
 async function ensureRates(): Promise<Record<string, number> | null> {
   if (cache && Date.now() - cache.fetchedAt < ttlMs) {
     return cache.rates;
@@ -44,15 +73,14 @@ async function ensureRates(): Promise<Record<string, number> | null> {
   }
 
   try {
-    const response = await fetch("https://api.exchangerate.host/latest?base=USD");
-    if (!response.ok) {
+    const liveRates = (await fetchPrimaryRates()) ?? (await fetchSecondaryRates());
+    if (!liveRates) {
       return null;
     }
 
-    const data = (await response.json()) as { rates: Record<string, number> };
-    cache = { rates: data.rates, fetchedAt: Date.now() };
+    cache = { rates: liveRates, fetchedAt: Date.now() };
     writeStorageCache(cache);
-    return data.rates;
+    return liveRates;
   } catch {
     return null;
   }

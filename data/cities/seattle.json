@@ -28,6 +28,11 @@
   "tiers": {
     "true_fat_fire": {
       "description": "Belltown/Downtown high-rise 2-3BR with view, weekly housekeeping, Canlis-tier dining monthly, 3+ international trips plus domestic ski/BC weekends.",
+      "guide": {
+        "groceries": "Whole Foods, PCC, and specialty butcher or fish-counter shopping with premium produce, seafood, wine, and easy entertaining at home.",
+        "dining": "Several good dinners out most weeks plus destination dining regularly, with nicer nights often around $150-$300 per person before wine.",
+        "rhythm": "Ride-hail when needed, housekeeping support, boutique fitness or wellness, and a leisure pattern that includes Whistler, islands, and long-haul travel."
+      },
       "groceries_monthly": 1800,
       "dining_out_monthly": 3500,
       "transport_monthly": 900,
@@ -46,6 +51,11 @@
     },
     "comfortable_expat": {
       "description": "Capitol Hill/Fremont/Ballard 1BR apartment, dining out 2-3 nights/week, bike and transit, summer PNW trips plus 1-2 international annually.",
+      "guide": {
+        "groceries": "A mix of Trader Joe's, PCC, farmers' market produce, and decent seafood or meat for a strong at-home kitchen without going full luxury.",
+        "dining": "Dining out 2-3 times a week plus the occasional nicer dinner, usually around $25-$50 casually and $100-$180 per person on a bigger night.",
+        "rhythm": "Mostly transit, bike, or occasional ride-hail, moderate wellness spending, and weekends shaped around hikes, ferries, and short regional escapes."
+      },
       "groceries_monthly": 1000,
       "dining_out_monthly": 1200,
       "transport_monthly": 400,
@@ -63,7 +73,12 @@
       "contingency_pct": 0.1
     },
     "luxury_family": {
-      "description": "Mercer Island or Bellevue 4BR house, private school tuition (Lakeside/Bush/Eastside Prep), annual international and ski trips, occasional housekeeper.",
+      "description": "Mercer Island or Bellevue 4BR house, top private school access (Lakeside/Bush/Eastside Prep) when dependents apply, annual international and ski trips, occasional housekeeper.",
+      "guide": {
+        "groceries": "Large family basket through PCC, Whole Foods, Costco-style top-ups, and premium proteins, snacks, and school provisioning without much compromise.",
+        "dining": "Family brunches and dinners out most weekends plus adult meals, with casual family meals often $30-$60 per person and nicer nights materially above that.",
+        "rhythm": "Housekeeping or childcare help, school and activity logistics, and a calendar built around skiing, camps, and international trips during breaks."
+      },
       "groceries_monthly": 2200,
       "dining_out_monthly": 2500,
       "transport_monthly": 1400,

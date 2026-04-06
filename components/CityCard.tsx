@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface CityCardProps {
   slug: string;
@@ -17,6 +18,8 @@ export function CityCard({
   lastUpdated,
   baselineFireNumberUsd,
 }: CityCardProps) {
+  const { t, locale } = useLocale();
+  const displayLocale = locale === "zh" ? "zh-CN" : "en-US";
   return (
     <Link
       href={`/city/${slug}`}
@@ -35,17 +38,17 @@ export function CityCard({
       </div>
       <div className="mt-6">
         <p className="text-xs uppercase tracking-[0.18em] text-neutral-500">
-          Baseline target
+          {t.home.baselineTarget}
         </p>
         <p className="mt-2 text-2xl font-semibold text-neutral-950">
           $
-          {baselineFireNumberUsd.toLocaleString("en-US", {
+          {baselineFireNumberUsd.toLocaleString(displayLocale, {
             maximumFractionDigits: 0,
           })}
         </p>
       </div>
       <div className="mt-6 flex items-center justify-between text-sm text-neutral-600">
-        <span>Open calculator</span>
+        <span>{t.home.openCalculator}</span>
         <span className="transition group-hover:translate-x-1">→</span>
       </div>
     </Link>

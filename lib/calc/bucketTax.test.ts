@@ -8,6 +8,7 @@ describe("computeTotalTax", () => {
       traditionalGross: 0,
       rothGross: 0,
       costBasisPct: 0.65,
+      filingStatus: "single",
       stateCode: "NONE",
     });
 
@@ -24,6 +25,7 @@ describe("computeTotalTax", () => {
       traditionalGross: 100000,
       rothGross: 0,
       costBasisPct: 0.65,
+      filingStatus: "single",
       stateCode: "NONE",
     });
 
@@ -38,6 +40,7 @@ describe("computeTotalTax", () => {
       traditionalGross: 0,
       rothGross: 200000,
       costBasisPct: 0.65,
+      filingStatus: "single",
       stateCode: "CA",
     });
 
@@ -50,6 +53,7 @@ describe("computeTotalTax", () => {
       traditionalGross: 0,
       rothGross: 0,
       costBasisPct: 0,
+      filingStatus: "single",
       stateCode: "NONE",
     });
 
